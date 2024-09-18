@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ restaurant.name }} - AtlantaFoodFinder{% endblock %}
+
+{% block content %}
+<h1>{{ restaurant.name }}</h1>
+<div class="row">
+    <div class="col-md-6">
+        {% if restaurant.image %}
+        <img src="{{ restaurant.image.url }}" class="img-fluid" alt="{{ restaurant.name }}">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <p><strong>Cuisine:</strong> {{ restaurant.cuisine.name }}</p>
+        <p><strong>Address:</strong> {{ restaurant.address }}</p>
+        <p>{{ restaurant.description }}</p>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'toggle_favorite' restaurant.pk %}">
+            {% csrf_token %}
+            {% if restaurant in user.favorite_restaurants.all %}
+            <button type="submit" class="btn btn-danger">Remove from Favorites</button>
+            {% else %}
+            <button type="submit" class="btn btn-success">Add to Favorites</button>
+            {% endif %}
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<h2 class="mt-4">Reviews</h2>
+{% for review in restaurant.reviews.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ review.user.username }} - Rating: {{ review.rating }}/5</h5>
+        <p class="card-text">{{ review.comment }}</p>
+        <small class="text-muted">{{ review.created_at }}</small>
+    </div>
+</div>
+{% empty %}
+<p>No reviews yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<h3>Add a Review</h3>
+<form method="post" action="{% url 'add_review' restaurant.pk %}">
+    {% csrf_token %}
+    {{ review_form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>
+{% endif %}
+{% endblock %}

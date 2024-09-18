@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Cuisines - AtlantaFoodFinder{% endblock %}
+
+{% block content %}
+<h1>Cuisines</h1>
+<ul class="list-group">
+    {% for cuisine in cuisines %}
+    <li class="list-group-item">
+        <a href="{% url 'restaurant_by_cuisine' cuisine.pk %}">{{ cuisine.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

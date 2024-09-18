@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - AtlantaFoodFinder{% endblock %}
+
+{% block content %}
+<h1>{{ user.username }}'s Profile</h1>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Bio:</strong> {{ user.bio }}</p>
+
+<h2>Favorite Restaurants</h2>
+<ul>
+    {% for restaurant in user.favorite_restaurants.all %}
+    <li><a href="{% url 'restaurant_detail' restaurant.pk %}">{{ restaurant.name }}</a></li>
+    {% empty %}
+    <li>No favorite restaurants yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
