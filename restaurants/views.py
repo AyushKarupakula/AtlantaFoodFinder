@@ -48,3 +48,13 @@ def toggle_favorite(request, pk):
     else:
         user.favorite_restaurants.add(restaurant)
     return redirect('restaurant_detail', pk=pk)
+
+def search(request):
+    query = request.GET.get('q')  
+    if query:
+       
+        results = Restaurant.objects.filter(name__icontains=query)
+    else:
+        results = Restaurant.objects.none()  
+    
+    return render(request, 'search_results.html', {'results': results})
