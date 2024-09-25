@@ -25,10 +25,6 @@
                         <a class="nav-link" href="{% url 'cuisine_list' %}">Cuisines</a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search restaurants" name="q" aria-label="Search">
-                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
-                </form>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
