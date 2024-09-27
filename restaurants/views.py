@@ -1,15 +1,22 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 from .models import Restaurant, Cuisine, Review
 from .forms import ReviewForm
 from django.conf import settings
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 class HomeView(ListView):
     model = Restaurant
     template_name = 'home.html'
     context_object_name = 'restaurants'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        return context
 
 class RestaurantDetailView(DetailView):
     model = Restaurant
@@ -18,11 +25,16 @@ class RestaurantDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['review_form'] = ReviewForm()
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
         return context
 
 def cuisine_list(request):
     cuisines = Cuisine.objects.all()
-    return render(request, 'cuisine_list.html', {'cuisines': cuisines})
+    context = {
+        'cuisines': cuisines,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+    }
+    return render(request, 'cuisine_list.html', context)
 
 def restaurant_by_cuisine(request, cuisine_id):
     cuisine = get_object_or_404(Cuisine, pk=cuisine_id)
@@ -67,6 +79,7 @@ def home(request):
     context = {
         'top_restaurants': top_restaurants,
         'cuisines': cuisines,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, 'home.html', context)
 
@@ -112,3 +125,52 @@ def add_review(request, restaurant_id):
             review.user = request.user
             review.save()
     return redirect('restaurant_detail', restaurant_id=restaurant_id)
+
+def filter_restaurants(request):
+    if request.method == 'POST':
+        cuisine = request.POST.get('cuisine')
+        rating = request.POST.get('rating')
+
+        restaurants = Restaurant.objects.all()
+
+        if cuisine:
+            restaurants = restaurants.filter(cuisine=cuisine)
+        if rating:
+            restaurants = restaurants.filter(rating__gte=float(rating))
+
+        context = {'restaurants': restaurants}
+        html = render_to_string('restaurant_list_partial.html', context)
+        return JsonResponse({'html': html})
+
+def restaurant_list(request):
+    restaurants = Restaurant.objects.all()
+    cuisines = Cuisine.objects.all()
+    
+    average_rating = restaurants.aggregate(Avg('rating'))['rating__avg']
+    most_popular_cuisine = Cuisine.objects.annotate(
+        restaurant_count=Count('restaurant')
+    ).order_by('-restaurant_count').first()
+    
+    top_rated_restaurants = Restaurant.objects.order_by('-rating')[:6]  # Get top 6 rated restaurants
+
+    context = {
+        'restaurants': restaurants,
+        'cuisines': cuisines,
+        'average_rating': average_rating or 0,  # Use 0 if there are no ratings
+        'most_popular_cuisine': most_popular_cuisine.name if most_popular_cuisine else 'N/A',
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+        'top_rated_restaurants': top_rated_restaurants,
+    }
+    return render(request, 'restaurant_list.html', context)
+
+def restaurant_api(request):
+    restaurants = Restaurant.objects.all()
+    data = [{
+        'id': restaurant.id,
+        'name': restaurant.name,
+        'latitude': restaurant.latitude if hasattr(restaurant, 'latitude') else None,
+        'longitude': restaurant.longitude if hasattr(restaurant, 'longitude') else None,
+        'rating': restaurant.rating,
+        'cuisine': restaurant.cuisine.name if restaurant.cuisine else ''
+    } for restaurant in restaurants]
+    return JsonResponse(data, safe=False)

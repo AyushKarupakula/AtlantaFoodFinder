@@ -9,10 +9,13 @@ class Cuisine(models.Model):
 
 class Restaurant(models.Model):
     name = models.CharField(max_length=200)
-    address = models.CharField(max_length=200)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.SET_NULL, null=True)
+    address = models.CharField(max_length=200)
+    rating = models.FloatField(default=0)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    image = models.ImageField(upload_to='restaurant_images/', null=True, blank=True)
     description = models.TextField()
-    image = models.ImageField(upload_to='restaurant_images', blank=True, null=True)
 
     def __str__(self):
         return self.name
