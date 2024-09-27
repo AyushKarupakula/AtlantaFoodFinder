@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Restaurant, Cuisine, Review
 from .forms import ReviewForm
+from django.conf import settings
 
 class HomeView(ListView):
     model = Restaurant
@@ -62,22 +63,53 @@ def search(request):
 
 def home(request):
     top_restaurants = Restaurant.objects.order_by('-rating')[:6]
-    return render(request, 'home.html', {'top_restaurants': top_restaurants})
+    cuisines = Cuisine.objects.all()
+    context = {
+        'top_restaurants': top_restaurants,
+        'cuisines': cuisines,
+        'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
+    }
+    return render(request, 'home.html', context)
 
 def search_results(request):
     query = request.GET.get('q')
-    restaurants = Restaurant.objects.filter(
-        Q(name__icontains=query) | Q(cuisine__icontains=query)
-    )
-    return render(request, 'search_results.html', {'restaurants': restaurants, 'query': query})
+    cuisine_id = request.GET.get('cuisine')
+    restaurants = Restaurant.objects.all()
+
+    if query:
+        restaurants = restaurants.filter(
+            Q(name__icontains=query) | Q(cuisine__name__icontains=query)
+        )
+    
+    if cuisine_id:
+        restaurants = restaurants.filter(cuisine_id=cuisine_id)
+
+    context = {
+        'restaurants': restaurants,
+        'query': query,
+        'selected_cuisine': cuisine_id,
+    }
+    return render(request, 'search_results.html', context)
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    reviews = restaurant.reviews.all().order_by('-created_at')
     review_form = ReviewForm()
-    return render(request, 'restaurant_detail.html', {'restaurant': restaurant, 'review_form': review_form})
+
+    context = {
+        'restaurant': restaurant,
+        'reviews': reviews,
+        'review_form': review_form,
+    }
+    return render(request, 'restaurant_detail.html', context)
 
 def add_review(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     if request.method == 'POST':
-        # Handle review submission
-        pass
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.restaurant = restaurant
+            review.user = request.user
+            review.save()
     return redirect('restaurant_detail', restaurant_id=restaurant_id)

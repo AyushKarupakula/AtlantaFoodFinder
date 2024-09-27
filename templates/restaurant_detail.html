@@ -17,7 +17,6 @@
     <div class="restaurant-content">
         <div class="restaurant-images">
             <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
-            <!-- Add more images or a carousel here -->
         </div>
         
         <div class="restaurant-info">
@@ -33,8 +32,8 @@
             <p>Website: <a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
             
             <div class="action-buttons">
-                <a href="#" class="btn-primary">Get Directions</a>
-                <button class="btn-secondary favorite-btn" data-id="{{ restaurant.id }}">
+                <a href="https://www.google.com/maps/dir/?api=1&destination={{ restaurant.address|urlencode }}" class="btn btn-primary" target="_blank">Get Directions</a>
+                <button class="btn btn-secondary favorite-btn" data-id="{{ restaurant.id }}">
                     <i class="fas fa-heart"></i> Save to Favorites
                 </button>
             </div>
@@ -43,13 +42,14 @@
     
     <div class="restaurant-reviews">
         <h2>Reviews</h2>
-        {% for review in restaurant.reviews.all %}
+        {% for review in reviews %}
         <div class="review-card">
             <div class="review-header">
                 <span class="review-author">{{ review.user.username }}</span>
                 <span class="review-rating">{{ review.rating }} ⭐</span>
             </div>
             <p class="review-content">{{ review.content }}</p>
+            <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
         </div>
         {% empty %}
         <p>No reviews yet. Be the first to review this restaurant!</p>
@@ -60,7 +60,7 @@
             {% csrf_token %}
             <h3>Write a Review</h3>
             {{ review_form.as_p }}
-            <button type="submit" class="btn-primary">Submit Review</button>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
         </form>
         {% endif %}
     </div>

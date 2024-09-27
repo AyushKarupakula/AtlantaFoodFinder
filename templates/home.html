@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Home - AtlantaFoodFinder{% endblock %}
+{% block title %}AtlantaFoodFinder - Discover Atlanta's Best Restaurants{% endblock %}
 
 {% block content %}
 <section class="hero">
@@ -9,63 +9,42 @@
         <h1>Discover Atlanta's Best Eats</h1>
         <form class="hero-search" action="{% url 'search_results' %}" method="get">
             <input type="text" name="q" placeholder="Search for restaurants or cuisines...">
+            <select name="cuisine">
+                <option value="">All Cuisines</option>
+                {% for cuisine in cuisines %}
+                <option value="{{ cuisine.id }}">{{ cuisine.name }}</option>
+                {% endfor %}
+            </select>
             <button type="submit"><i class="fas fa-search"></i> Find Food</button>
         </form>
-        <div class="quick-filters">
-            <button data-cuisine="American">American</button>
-            <button data-cuisine="Italian">Italian</button>
-            <button data-cuisine="Asian">Asian</button>
-            <button data-cuisine="Mexican">Mexican</button>
-        </div>
-    </div>
-</section>
-
-<section class="featured-restaurants">
-    <h2>Top Rated Restaurants</h2>
-    <div class="restaurant-grid">
-        {% for restaurant in top_restaurants %}
-        <div class="restaurant-card">
-            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
-            <h3>{{ restaurant.name }}</h3>
-            <p>{{ restaurant.cuisine }} • {{ restaurant.rating }} ⭐</p>
-            <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn-view">View Details</a>
-        </div>
-        {% endfor %}
-    </div>
-</section>
-
-<section class="cuisine-categories">
-    <div class="container">
-        <h2>Explore by Cuisine</h2>
-        <div class="category-grid">
-            <a href="#" class="category-card">
-                <img src="{% static 'images/american.jpg' %}" alt="American Cuisine">
-                <h3>American</h3>
-            </a>
-            <a href="#" class="category-card">
-                <img src="{% static 'images/italian.jpg' %}" alt="Italian Cuisine">
-                <h3>Italian</h3>
-            </a>
-            <a href="#" class="category-card">
-                <img src="{% static 'images/asian.jpg' %}" alt="Asian Cuisine">
-                <h3>Asian</h3>
-            </a>
-            <a href="#" class="category-card">
-                <img src="{% static 'images/mexican.jpg' %}" alt="Mexican Cuisine">
-                <h3>Mexican</h3>
-            </a>
-        </div>
     </div>
 </section>
 
 <section class="map-section">
-    <div class="container map-container">
-        <div class="map-info">
-            <h2>Explore Nearby</h2>
-            <p>Discover the best restaurants in your area. Use our interactive map to find new dining experiences just around the corner.</p>
-            <a href="#" class="btn btn-primary">View All Restaurants</a>
-        </div>
+    <div class="container">
+        <h2>Explore Restaurants in Atlanta</h2>
         <div id="map"></div>
+    </div>
+</section>
+
+<section class="featured-restaurants">
+    <div class="container">
+        <h2>Top Rated Restaurants</h2>
+        <div class="restaurant-grid">
+            {% for restaurant in top_restaurants %}
+            <div class="restaurant-card" data-lat="{{ restaurant.latitude }}" data-lng="{{ restaurant.longitude }}">
+                <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
+                <div class="restaurant-card-content">
+                    <h3>{{ restaurant.name }}</h3>
+                    <p><strong>Cuisine:</strong> {{ restaurant.cuisine }}</p>
+                    <p><strong>Rating:</strong> {{ restaurant.rating }} ⭐</p>
+                    <p><strong>Address:</strong> {{ restaurant.address }}</p>
+                    <p><strong>Hours:</strong> {{ restaurant.opening_hours }}</p>
+                    <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn-view">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endblock %}

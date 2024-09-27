@@ -41,8 +41,21 @@ body {
   padding: 1rem 2rem;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+}
+
 .logo img {
-  height: 50px;
+  height: 80px; /* Increased from 50px */
+  width: auto;
+  margin-right: 1rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
 }
 
 .search-bar {
