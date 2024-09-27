@@ -4,13 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AtlantaFoodFinder</title>
+    <title>{% block title %}AtlantaFoodFinder{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+    {% block extra_css %}{% endblock %}
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY" defer></script>
     <script src="{% static 'js/main.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
 </head>
 <body>
-    <header class="sticky-header">
+    <header class="sticky-header slide-in-top">
         <nav>
             <a href="/" class="logo">
                 <img src="{% static 'images/logo.png' %}" alt="AtlantaFoodFinder">
@@ -20,14 +24,14 @@
                 <button type="submit"><i class="fas fa-search"></i></button>
             </div>
             <ul class="nav-links">
-                <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="/cuisines"><i class="fas fa-utensils"></i> Cuisines</a></li>
+                <li><a href="/" class="fade-in"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/cuisines" class="fade-in"><i class="fas fa-utensils"></i> Cuisines</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="/dashboard"><i class="fas fa-user"></i> My Account</a></li>
-                    <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a href="/dashboard" class="fade-in"><i class="fas fa-user"></i> My Account</a></li>
+                    <li><a href="/logout" class="fade-in"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 {% else %}
-                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                    <li><a href="/signup"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                    <li><a href="/login" class="fade-in"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="/signup" class="fade-in"><i class="fas fa-user-plus"></i> Sign Up</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -38,8 +42,15 @@
         {% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2023 AtlantaFoodFinder. All rights reserved.</p>
+    <footer class="slide-in-bottom">
+        <div class="container">
+            <p>&copy; 2023 AtlantaFoodFinder. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="fade-in"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="fade-in"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="fade-in"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
     </footer>
 </body>
 </html>

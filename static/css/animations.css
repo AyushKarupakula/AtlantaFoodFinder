@@ -1,0 +1,35 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromBottom {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.5s ease-out;
+}

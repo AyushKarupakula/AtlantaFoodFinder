@@ -1,60 +1,123 @@
 .restaurant-detail {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 4rem auto;
     padding: 0 1rem;
 }
 
 .restaurant-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+}
+
+.restaurant-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 .restaurant-meta {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 2rem;
     color: #666;
+    font-size: 1.1rem;
 }
 
 .restaurant-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 3rem;
+}
+
+.restaurant-images {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .restaurant-images img {
     width: 100%;
-    border-radius: 8px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.restaurant-images:hover img {
+    transform: scale(1.05);
 }
 
 .restaurant-info h2 {
-    margin-top: 0;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.restaurant-info p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
 }
 
 .action-buttons {
-    margin-top: 1rem;
-}
-
-.restaurant-reviews {
+    display: flex;
+    gap: 1rem;
     margin-top: 2rem;
 }
 
+.restaurant-reviews {
+    margin-top: 4rem;
+}
+
+.restaurant-reviews h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
 .review-card {
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    background-color: var(--card-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .review-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.review-author {
+    font-weight: 600;
+}
+
+.review-rating {
+    color: var(--primary-color);
+}
+
+.review-content {
+    line-height: 1.8;
 }
 
 .review-form {
-    margin-top: 2rem;
-    background-color: #f9f9f9;
+    margin-top: 3rem;
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.review-form h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.review-form textarea {
+    width: 100%;
     padding: 1rem;
-    border-radius: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    resize: vertical;
+    min-height: 150px;
+}
+
+.review-form button {
+    margin-top: 1rem;
 }
