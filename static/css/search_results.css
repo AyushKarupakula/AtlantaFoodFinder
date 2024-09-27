@@ -1,0 +1,43 @@
+.search-results-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.results-list {
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.result-card {
+    display: flex;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.result-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.result-info {
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.result-info h3 {
+    margin-top: 0;
+}
+
+#results-map {
+    height: 80vh;
+    position: sticky;
+    top: 2rem;
+}

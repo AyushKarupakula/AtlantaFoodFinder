@@ -1,0 +1,60 @@
+.restaurant-detail {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.restaurant-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.restaurant-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    color: #666;
+}
+
+.restaurant-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.restaurant-images img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.restaurant-info h2 {
+    margin-top: 0;
+}
+
+.action-buttons {
+    margin-top: 1rem;
+}
+
+.restaurant-reviews {
+    margin-top: 2rem;
+}
+
+.review-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.review-form {
+    margin-top: 2rem;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+}
