@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Restaurant, Cuisine, Review
 from .forms import ReviewForm
 
@@ -58,3 +59,25 @@ def search(request):
         results = Restaurant.objects.none()  
     
     return render(request, 'search_results.html', {'results': results})
+
+def home(request):
+    top_restaurants = Restaurant.objects.order_by('-rating')[:6]
+    return render(request, 'home.html', {'top_restaurants': top_restaurants})
+
+def search_results(request):
+    query = request.GET.get('q')
+    restaurants = Restaurant.objects.filter(
+        Q(name__icontains=query) | Q(cuisine__icontains=query)
+    )
+    return render(request, 'search_results.html', {'restaurants': restaurants, 'query': query})
+
+def restaurant_detail(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    review_form = ReviewForm()
+    return render(request, 'restaurant_detail.html', {'restaurant': restaurant, 'review_form': review_form})
+
+def add_review(request, restaurant_id):
+    if request.method == 'POST':
+        # Handle review submission
+        pass
+    return redirect('restaurant_detail', restaurant_id=restaurant_id)

@@ -1,23 +1,45 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home - AtlantaFoodFinder{% endblock %}
 
 {% block content %}
-<h1>Welcome to AtlantaFoodFinder</h1>
-<div class="row">
-    {% for restaurant in restaurants %}
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            {% if restaurant.image %}
-            <img src="{{ restaurant.image.url }}" class="card-img-top" alt="{{ restaurant.name }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ restaurant.name }}</h5>
-                <p class="card-text">{{ restaurant.description|truncatewords:20 }}</p>
-                <a href="{% url 'restaurant_detail' restaurant.pk %}" class="btn btn-primary">View Details</a>
-            </div>
+<section class="hero">
+    <div class="hero-content">
+        <h1>Discover Atlanta's Best Eats</h1>
+        <form class="hero-search" action="{% url 'search_results' %}" method="get">
+            <input type="text" name="q" placeholder="Search for restaurants or cuisines...">
+            <button type="submit"><i class="fas fa-search"></i> Find Food</button>
+        </form>
+        <div class="quick-filters">
+            <button data-cuisine="American">American</button>
+            <button data-cuisine="Italian">Italian</button>
+            <button data-cuisine="Asian">Asian</button>
+            <button data-cuisine="Mexican">Mexican</button>
         </div>
     </div>
-    {% endfor %}
-</div>
+</section>
+
+<section class="featured-restaurants">
+    <h2>Top Rated Restaurants</h2>
+    <div class="restaurant-grid">
+        {% for restaurant in top_restaurants %}
+        <div class="restaurant-card">
+            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
+            <h3>{{ restaurant.name }}</h3>
+            <p>{{ restaurant.cuisine }} • {{ restaurant.rating }} ⭐</p>
+            <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn-view">View Details</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="map-section">
+    <h2>Explore Nearby</h2>
+    <div id="map"></div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
 {% endblock %}
