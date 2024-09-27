@@ -38,7 +38,10 @@ function initMap() {
         }
     });
 
-    map.fitBounds(bounds);
+    if (!bounds.isEmpty()) {
+        map.fitBounds(bounds);
+    }
 }
 
-// The initMap function will be called automatically by the Google Maps API
+// Make sure initMap is globally accessible
+window.initMap = initMap;

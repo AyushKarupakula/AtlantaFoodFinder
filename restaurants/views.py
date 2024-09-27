@@ -67,7 +67,6 @@ def home(request):
     context = {
         'top_restaurants': top_restaurants,
         'cuisines': cuisines,
-        'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY,
     }
     return render(request, 'home.html', context)
 

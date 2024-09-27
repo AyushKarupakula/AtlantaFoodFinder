@@ -72,4 +72,4 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 ROOT_URLCONF = 'atlantafoodfinder.urls'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
+GOOGLE_MAPS_API_KEY = 'AIzaSyBLZxDKEynXZdwnrfwiLvi6UjkOew7i8-Y'
