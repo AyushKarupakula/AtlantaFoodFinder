@@ -1,19 +1,20 @@
 import React from 'react';
 
-const SearchSection: React.FC = () => {
+interface SearchSectionProps {
+  onFindFood: () => void;
+}
+
+function SearchSection({ onFindFood }: SearchSectionProps) {
   return (
-    <section className="search-section">
-      <h2>Discover Atlanta's Best Eats</h2>
-      <div className="search-bar">
-        <input type="text" placeholder="Search for restaurants or..." className="search-input" />
-        <select className="cuisine-select">
-          <option value="all">All Cuisines</option>
-          {/* Add more cuisine options here */}
-        </select>
-        <button className="find-food-button">Find Food!</button>
-      </div>
-    </section>
+    <div className="search-section">
+      <input type="text" placeholder="Search for restaurants or cuisines..." />
+      <select>
+        <option value="">All Cuisines</option>
+        {/* Add more cuisine options here */}
+      </select>
+      <button onClick={onFindFood}>Find Food!</button>
+    </div>
   );
-};
+}
 
 export default SearchSection;
