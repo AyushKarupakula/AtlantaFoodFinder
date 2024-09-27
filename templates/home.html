@@ -55,6 +55,16 @@
         </div>
     </div>
 </section>
+
+<!-- Add a new section to display nearby restaurants -->
+<section class="nearby-restaurants">
+    <div class="container">
+        <h2>Nearby Restaurants</h2>
+        <div class="restaurant-grid" id="nearby-restaurant-list">
+            <!-- Nearby restaurants will be dynamically inserted here -->
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
@@ -135,10 +145,12 @@
                         return distance <= 5000; // 5km radius
                     });
 
+                    console.log("Nearby Restaurants:", nearbyRestaurants); // Debugging line
                     updateMap(nearbyRestaurants);
-                    updateRestaurantList(nearbyRestaurants);
+                    updateNearbyRestaurantList(nearbyRestaurants);
                 },
-                () => {
+                (error) => {
+                    console.error("Geolocation error:", error); // Debugging line
                     alert("Error: The Geolocation service failed.");
                 }
             );
@@ -199,6 +211,30 @@
             `;
             restaurantList.appendChild(restaurantCard);
         });
+    }
+
+    function updateNearbyRestaurantList(nearbyRestaurants) {
+        const nearbyRestaurantList = document.getElementById("nearby-restaurant-list");
+        nearbyRestaurantList.innerHTML = '';
+
+        if (nearbyRestaurants.length === 0) {
+            nearbyRestaurantList.innerHTML = '<p>No nearby restaurants found.</p>';
+            return;
+        }
+
+        nearbyRestaurants.forEach(restaurant => {
+            const restaurantCard = document.createElement('div');
+            restaurantCard.className = 'restaurant-card';
+            restaurantCard.innerHTML = `
+                <h3>${restaurant.name}</h3>
+                <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
+                <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
+                <a href="/restaurant/${restaurant.id}" class="btn-view">View Details</a>
+            `;
+            nearbyRestaurantList.appendChild(restaurantCard);
+        });
+
+        console.log("Updated Nearby Restaurant List:", nearbyRestaurants); // Debugging line
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&libraries=geometry" async defer></script>
