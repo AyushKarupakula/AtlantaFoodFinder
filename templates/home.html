@@ -61,15 +61,16 @@
 <script src="{% static 'js/home.js' %}"></script>
 <script>
     let map;
+    let markers = [];
     const restaurants = [
-        {% for restaurant in top_restaurants %}
+        {% for restaurant in restaurants %}
         {
             id: {{ restaurant.id }},
             name: "{{ restaurant.name }}",
             lat: {{ restaurant.latitude|default_if_none:0 }},
             lng: {{ restaurant.longitude|default_if_none:0 }},
-            cuisine: "{{ restaurant.cuisine }}",
-            rating: {{ restaurant.rating }},
+            cuisine: "{{ restaurant.cuisine.name|default_if_none:'' }}",
+            rating: {{ restaurant.rating|default_if_none:0 }},
         },
         {% endfor %}
     ];
@@ -80,7 +81,21 @@
             zoom: 12,
         });
 
-        const markers = restaurants.map(restaurant => {
+        createMarkers();
+
+        // Add geolocation feature
+        document.getElementById("geolocate-btn").addEventListener("click", findNearbyRestaurants);
+
+        // Add filtering functionality
+        document.getElementById("cuisine-filter").addEventListener("change", filterRestaurants);
+        document.getElementById("rating-filter").addEventListener("change", filterRestaurants);
+    }
+
+    function createMarkers() {
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+
+        restaurants.forEach(restaurant => {
             if (restaurant.lat && restaurant.lng) {
                 const marker = new google.maps.Marker({
                     position: { lat: restaurant.lat, lng: restaurant.lng },
@@ -96,53 +111,95 @@
                     infoWindow.open(map, marker);
                 });
 
-                return marker;
-            }
-            return null;
-        }).filter(marker => marker !== null);
-
-        // Add geolocation feature
-        document.getElementById("geolocate-btn").addEventListener("click", () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const pos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
-                        map.setCenter(pos);
-                        map.setZoom(14);
-                    },
-                    () => {
-                        alert("Error: The Geolocation service failed.");
-                    }
-                );
-            } else {
-                alert("Error: Your browser doesn't support geolocation.");
+                markers.push(marker);
             }
         });
+    }
 
-        // Add filtering functionality
-        document.getElementById("cuisine-filter").addEventListener("change", filterRestaurants);
-        document.getElementById("rating-filter").addEventListener("change", filterRestaurants);
+    function findNearbyRestaurants() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+                    map.setCenter(userLocation);
+                    map.setZoom(14);
 
-        function filterRestaurants() {
-            const selectedCuisine = document.getElementById("cuisine-filter").value;
-            const selectedRating = document.getElementById("rating-filter").value;
+                    const nearbyRestaurants = restaurants.filter(restaurant => {
+                        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                            new google.maps.LatLng(userLocation),
+                            new google.maps.LatLng(restaurant.lat, restaurant.lng)
+                        );
+                        return distance <= 5000; // 5km radius
+                    });
 
-            markers.forEach((marker, i) => {
-                const restaurant = restaurants[i];
-                const cuisineMatch = !selectedCuisine || restaurant.cuisine == selectedCuisine;
-                const ratingMatch = !selectedRating || restaurant.rating >= parseFloat(selectedRating);
-
-                if (cuisineMatch && ratingMatch) {
-                    marker.setMap(map);
-                } else {
-                    marker.setMap(null);
+                    updateMap(nearbyRestaurants);
+                    updateRestaurantList(nearbyRestaurants);
+                },
+                () => {
+                    alert("Error: The Geolocation service failed.");
                 }
-            });
+            );
+        } else {
+            alert("Error: Your browser doesn't support geolocation.");
         }
     }
+
+    function filterRestaurants() {
+        const selectedCuisine = document.getElementById("cuisine-filter").value;
+        const selectedRating = parseFloat(document.getElementById("rating-filter").value);
+
+        const filteredRestaurants = restaurants.filter(restaurant => {
+            const cuisineMatch = !selectedCuisine || restaurant.cuisine == selectedCuisine;
+            const ratingMatch = !selectedRating || restaurant.rating >= selectedRating;
+            return cuisineMatch && ratingMatch;
+        });
+
+        updateMap(filteredRestaurants);
+        updateRestaurantList(filteredRestaurants);
+    }
+
+    function updateMap(filteredRestaurants) {
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+
+        filteredRestaurants.forEach(restaurant => {
+            const marker = new google.maps.Marker({
+                position: { lat: restaurant.lat, lng: restaurant.lng },
+                map: map,
+                title: restaurant.name,
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<h3>${restaurant.name}</h3><p>Cuisine: ${restaurant.cuisine}</p><p>Rating: ${restaurant.rating} ⭐</p>`
+            });
+
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+            });
+
+            markers.push(marker);
+        });
+    }
+
+    function updateRestaurantList(filteredRestaurants) {
+        const restaurantList = document.getElementById("restaurant-list");
+        restaurantList.innerHTML = '';
+
+        filteredRestaurants.forEach(restaurant => {
+            const restaurantCard = document.createElement('div');
+            restaurantCard.className = 'restaurant-card';
+            restaurantCard.innerHTML = `
+                <h3>${restaurant.name}</h3>
+                <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
+                <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
+                <a href="/restaurant/${restaurant.id}" class="btn-view">View Details</a>
+            `;
+            restaurantList.appendChild(restaurantCard);
+        });
+    }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&libraries=geometry" async defer></script>
 {% endblock %}

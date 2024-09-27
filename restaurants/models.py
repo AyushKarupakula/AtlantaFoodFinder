@@ -11,11 +11,11 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=200)
     cuisine = models.ForeignKey(Cuisine, on_delete=models.SET_NULL, null=True)
     address = models.CharField(max_length=200)
-    rating = models.FloatField(default=0)
+    rating = models.FloatField(default=0)  # Make sure this field is present
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
     image = models.ImageField(upload_to='restaurant_images/', null=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.name

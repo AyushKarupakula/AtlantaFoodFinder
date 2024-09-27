@@ -74,10 +74,10 @@ def search(request):
     return render(request, 'search_results.html', {'results': results})
 
 def home(request):
-    top_restaurants = Restaurant.objects.order_by('-rating')[:6]
+    restaurants = Restaurant.objects.all()
     cuisines = Cuisine.objects.all()
     context = {
-        'top_restaurants': top_restaurants,
+        'restaurants': restaurants,
         'cuisines': cuisines,
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
     }
@@ -151,12 +151,12 @@ def restaurant_list(request):
         restaurant_count=Count('restaurant')
     ).order_by('-restaurant_count').first()
     
-    top_rated_restaurants = Restaurant.objects.order_by('-rating')[:6]  # Get top 6 rated restaurants
+    top_rated_restaurants = Restaurant.objects.order_by('-rating')[:6]
 
     context = {
         'restaurants': restaurants,
         'cuisines': cuisines,
-        'average_rating': average_rating or 0,  # Use 0 if there are no ratings
+        'average_rating': average_rating or 0,
         'most_popular_cuisine': most_popular_cuisine.name if most_popular_cuisine else 'N/A',
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
         'top_rated_restaurants': top_rated_restaurants,
@@ -168,8 +168,8 @@ def restaurant_api(request):
     data = [{
         'id': restaurant.id,
         'name': restaurant.name,
-        'latitude': restaurant.latitude if hasattr(restaurant, 'latitude') else None,
-        'longitude': restaurant.longitude if hasattr(restaurant, 'longitude') else None,
+        'latitude': restaurant.latitude,
+        'longitude': restaurant.longitude,
         'rating': restaurant.rating,
         'cuisine': restaurant.cuisine.name if restaurant.cuisine else ''
     } for restaurant in restaurants]
