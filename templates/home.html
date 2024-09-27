@@ -34,9 +34,39 @@
     </div>
 </section>
 
+<section class="cuisine-categories">
+    <div class="container">
+        <h2>Explore by Cuisine</h2>
+        <div class="category-grid">
+            <a href="#" class="category-card">
+                <img src="{% static 'images/american.jpg' %}" alt="American Cuisine">
+                <h3>American</h3>
+            </a>
+            <a href="#" class="category-card">
+                <img src="{% static 'images/italian.jpg' %}" alt="Italian Cuisine">
+                <h3>Italian</h3>
+            </a>
+            <a href="#" class="category-card">
+                <img src="{% static 'images/asian.jpg' %}" alt="Asian Cuisine">
+                <h3>Asian</h3>
+            </a>
+            <a href="#" class="category-card">
+                <img src="{% static 'images/mexican.jpg' %}" alt="Mexican Cuisine">
+                <h3>Mexican</h3>
+            </a>
+        </div>
+    </div>
+</section>
+
 <section class="map-section">
-    <h2>Explore Nearby</h2>
-    <div id="map"></div>
+    <div class="container map-container">
+        <div class="map-info">
+            <h2>Explore Nearby</h2>
+            <p>Discover the best restaurants in your area. Use our interactive map to find new dining experiences just around the corner.</p>
+            <a href="#" class="btn btn-primary">View All Restaurants</a>
+        </div>
+        <div id="map"></div>
+    </div>
 </section>
 {% endblock %}
 
