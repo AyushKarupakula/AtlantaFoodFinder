@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../logo.png';
 
 const Header: React.FC = () => {
@@ -15,10 +16,10 @@ const Header: React.FC = () => {
         </button>
       </div>
       <nav>
-        <a href="/">Home</a>
-        <a href="/cuisines">Cuisines</a>
-        <a href="/login">Login</a>
-        <a href="/signup" className="sign-up">Sign Up</a>
+        <Link to="/">Home</Link>
+        <Link to="/cuisines">Cuisines</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/signup" className="sign-up">Sign Up</Link>
       </nav>
     </header>
   );
