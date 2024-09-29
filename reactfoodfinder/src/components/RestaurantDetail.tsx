@@ -1,56 +1,85 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import './RestaurantDetail.css';
 
-interface RestaurantDetails {
-  id: string;
+interface Restaurant {
+  id: number;
   name: string;
   cuisine: string;
   rating: number;
   address: string;
   phone: string;
   reviews: string[];
+  lat: number;
+  lng: number;
 }
 
-function RestaurantDetail() {
+const RestaurantDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [restaurant, setRestaurant] = useState<RestaurantDetails | null>(null);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
 
   useEffect(() => {
-    // TODO: Fetch restaurant details from an API
-    // For now, we'll use dummy data
-    const dummyData: RestaurantDetails = {
-      id: id || '',
+    // In a real application, you would fetch the restaurant data from an API
+    // For this example, we'll use mock data
+    const mockRestaurant: Restaurant = {
+      id: 1,
       name: "Joe's Pizza",
       cuisine: "Italian",
       rating: 4.5,
       address: "123 Peachtree St, Atlanta, GA 30303",
       phone: "(404) 555-1234",
-      reviews: ["Great pizza!", "Friendly staff", "Will come again"]
+      reviews: ["Great pizza!", "Friendly staff", "Will come again"],
+      lat: 33.7490, // Example latitude for Atlanta
+      lng: -84.3880, // Example longitude for Atlanta
     };
-    setRestaurant(dummyData);
+    setRestaurant(mockRestaurant);
   }, [id]);
 
-  if (!restaurant) return <div>Loading...</div>;
+  if (!restaurant) {
+    return <div>Loading...</div>;
+  }
+
+  const mapContainerStyle = {
+    width: '100%',
+    height: '400px'
+  };
+
+  const center = {
+    lat: restaurant.lat,
+    lng: restaurant.lng
+  };
 
   return (
     <div className="restaurant-detail">
-      <h2>{restaurant.name}</h2>
-      <p>Cuisine: {restaurant.cuisine}</p>
-      <p>Rating: {restaurant.rating}</p>
-      <p>Address: {restaurant.address}</p>
-      <p>Phone: {restaurant.phone}</p>
-      <h3>Reviews</h3>
-      <ul>
-        {restaurant.reviews.map((review, index) => (
-          <li key={index}>{review}</li>
-        ))}
-      </ul>
-      <div className="map">
-        {/* TODO: Implement Google Maps integration */}
-        <p>Google Maps will be displayed here</p>
+      <h1>{restaurant.name}</h1>
+      <div className="restaurant-info">
+        <p><strong>Cuisine:</strong> {restaurant.cuisine}</p>
+        <p><strong>Rating:</strong> {restaurant.rating}</p>
+        <p><strong>Address:</strong> {restaurant.address}</p>
+        <p><strong>Phone:</strong> {restaurant.phone}</p>
+      </div>
+      <div className="reviews">
+        <h2>Reviews</h2>
+        <ul>
+          {restaurant.reviews.map((review, index) => (
+            <li key={index}>{review}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="map-container">
+        <LoadScript googleMapsApiKey="AIzaSyBLZxDKEynXZdwnrfwiLvi6UjkOew7i8-Y">
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            zoom={14}
+          >
+            <Marker position={center} />
+          </GoogleMap>
+        </LoadScript>
       </div>
     </div>
   );
-}
+};
 
 export default RestaurantDetail;
