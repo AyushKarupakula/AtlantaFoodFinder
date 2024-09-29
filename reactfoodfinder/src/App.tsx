@@ -5,6 +5,7 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 import RestaurantDetail from './components/RestaurantDetail';
+import ResultsPage from './components/ResultsPage';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+            <Route path="/results" element={<ResultsPage />} />
           </Routes>
         </main>
         <footer>

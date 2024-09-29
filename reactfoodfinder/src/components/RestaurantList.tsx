@@ -1,32 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import RestaurantCard from './RestaurantCard';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './RestaurantList.css';
 
 interface Restaurant {
-  id: string;
+  id: number;
   name: string;
   cuisine: string;
   rating: number;
+  image: string;
+  priceRange: string;
 }
 
+const restaurants: Restaurant[] = [
+  { id: 1, name: "Joe's Pizza", cuisine: "Italian", rating: 4.5, image: "https://example.com/joes-pizza.jpg", priceRange: "$$" },
+  { id: 2, name: "Sushi Palace", cuisine: "Japanese", rating: 4.2, image: "https://example.com/sushi-palace.jpg", priceRange: "$$$" },
+  { id: 3, name: "Taco Town", cuisine: "Mexican", rating: 4.0, image: "https://example.com/taco-town.jpg", priceRange: "$" },
+];
+
 function RestaurantList() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-
-  useEffect(() => {
-    // TODO: Fetch nearby restaurants from an API
-    // For now, we'll use dummy data
-    const dummyData: Restaurant[] = [
-      { id: '1', name: "Joe's Pizza", cuisine: "Italian", rating: 4.5 },
-      { id: '2', name: "Sushi Palace", cuisine: "Japanese", rating: 4.2 },
-      { id: '3', name: "Taco Town", cuisine: "Mexican", rating: 4.0 },
-    ];
-    setRestaurants(dummyData);
-  }, []);
-
   return (
     <div className="restaurant-list">
-      <h2>Nearby Restaurants</h2>
-      {restaurants.map(restaurant => (
-        <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+      {restaurants.map((restaurant) => (
+        <Link to={`/restaurant/${restaurant.id}`} key={restaurant.id} className="restaurant-card">
+          <div className="restaurant-image" style={{ backgroundImage: `url(${restaurant.image})` }}>
+            <span className="price-range">{restaurant.priceRange}</span>
+          </div>
+          <div className="restaurant-info">
+            <h2>{restaurant.name}</h2>
+            <p className="cuisine">{restaurant.cuisine}</p>
+            <div className="rating">
+              <span className="stars" style={{ '--rating': restaurant.rating } as React.CSSProperties}></span>
+              <span className="rating-number">{restaurant.rating.toFixed(1)}</span>
+            </div>
+          </div>
+        </Link>
       ))}
     </div>
   );

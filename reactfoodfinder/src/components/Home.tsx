@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import SearchSection from './SearchSection';
 import MapSection from './MapSection';
-import RestaurantList from './RestaurantList';
 import './Home.css';
 
 function Home() {
-  const [showRestaurants, setShowRestaurants] = useState(false);
+  const navigate = useNavigate();
 
   const handleFindFood = () => {
-    setShowRestaurants(true);
+    navigate('/results');
   };
 
   return (
@@ -17,11 +17,7 @@ function Home() {
         <h1 className="title">Discover Atlanta's Best Eats</h1>
       </div>
       <SearchSection onFindFood={handleFindFood} />
-      {showRestaurants ? (
-        <RestaurantList />
-      ) : (
-        <MapSection />
-      )}
+      <MapSection />
     </div>
   );
 }
