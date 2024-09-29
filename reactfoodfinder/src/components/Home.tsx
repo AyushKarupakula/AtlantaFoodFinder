@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SearchSection from './SearchSection';
 import MapSection from './MapSection';
 import RestaurantList from './RestaurantList';
+import './Home.css';
 
 function Home() {
   const [showRestaurants, setShowRestaurants] = useState(false);
@@ -12,7 +13,9 @@ function Home() {
 
   return (
     <div className="home">
-      <h1>Discover Atlanta's Best Eats</h1>
+      <div className="title-container">
+        <h1 className="title">Discover Atlanta's Best Eats</h1>
+      </div>
       <SearchSection onFindFood={handleFindFood} />
       {showRestaurants ? (
         <RestaurantList />
