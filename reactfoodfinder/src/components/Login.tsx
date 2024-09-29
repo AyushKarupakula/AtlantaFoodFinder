@@ -8,7 +8,6 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the login logic
     console.log('Login attempted with:', email, password);
   };
 
@@ -19,33 +18,35 @@ const Login: React.FC = () => {
         <p>Discover the best restaurants in Atlanta</p>
       </ImageSection>
       <FormSection>
-        <LoginForm onSubmit={handleSubmit}>
-          <LoginHeader>Welcome Back</LoginHeader>
-          <InputGroup>
-            <StyledInput
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="Email"
-            />
-          </InputGroup>
-          <InputGroup>
-            <StyledInput
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Password"
-            />
-          </InputGroup>
-          <SubmitButton type="submit">Sign In</SubmitButton>
-        </LoginForm>
-        <p>
-          Don't have an account? <Link to="/signup">Sign up here</Link>
-        </p>
+        <LoginWrapper>
+          <LoginForm onSubmit={handleSubmit}>
+            <LoginHeader>Welcome Back</LoginHeader>
+            <InputGroup>
+              <StyledInput
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Email"
+              />
+            </InputGroup>
+            <InputGroup>
+              <StyledInput
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Password"
+              />
+            </InputGroup>
+            <SubmitButton type="submit">Sign In</SubmitButton>
+          </LoginForm>
+          <SignUpPrompt>
+            Don't have an account? <Link to="/signup">Sign up here</Link>
+          </SignUpPrompt>
+        </LoginWrapper>
       </FormSection>
     </LoginContainer>
   );
@@ -97,13 +98,17 @@ const FormSection = styled.div`
   }
 `;
 
-const LoginForm = styled.form`
+const LoginWrapper = styled.div`
   background-color: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+`;
+
+const LoginForm = styled.form`
+  margin-bottom: 1rem;
 `;
 
 const LoginHeader = styled.h2`
@@ -144,6 +149,18 @@ const SubmitButton = styled.button`
 
   &:hover {
     background-color: #5a67d8;
+  }
+`;
+
+const SignUpPrompt = styled.p`
+  text-align: center;
+  font-size: 0.9rem;
+  color: #333;
+
+  a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: bold;
   }
 `;
 
