@@ -1,46 +1,136 @@
-# Getting Started with Create React App
+# AtlantaFoodFinder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AtlantaFoodFinder is a web application that helps users discover and explore restaurants in Atlanta, Georgia. It features a Django backend API and a React frontend.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Browse restaurants by cuisine type
+- Search for restaurants by name or location
+- View restaurant details, including menu, hours, and reviews
+- User authentication and profile management
+- Add and manage favorite restaurants
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `backend/`: Django backend API
+  - `atlantafoodfinder/`: Main Django project directory
+  - `restaurants/`: Django app for restaurant-related functionality
+  - `users/`: Django app for user authentication and profiles
+- `reactfoodfinder/`: React frontend application
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Installation and Setup
 
-### `npm test`
+### Backend (Django)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/AtlantaFoodFinder.git
+   cd AtlantaFoodFinder/backend
+   ```
 
-### `npm run build`
+2. Create a virtual environment and activate it:
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. Set up the database:
+   ```
+   python manage.py migrate
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. Create a superuser:
+   ```
+   python manage.py createsuperuser
+   ```
 
-### `npm run eject`
+6. Run the development server:
+   ```
+   python manage.py runserver
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The backend API will be available at `http://localhost:8000`.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Frontend (React)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+1. Navigate to the React frontend directory:
+   ```
+   cd ../reactfoodfinder
+   ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+2. Install the required npm packages:
+   ```
+   npm install
+   ```
 
-## Learn More
+3. Start the React development server:
+   ```
+   npm start
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The frontend application will be available at `http://localhost:3000`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Development Workflow
+
+1. Run both the backend and frontend servers simultaneously.
+2. Make API requests from the React frontend to `http://localhost:8000/api/...`.
+3. Implement new features or fix bugs in the appropriate directories:
+   - Backend changes: `backend/`
+   - Frontend changes: `reactfoodfinder/src/`
+
+## API Documentation
+
+(Add information about your API endpoints, request/response formats, and authentication requirements here.)
+
+## Environment Variables
+
+### Backend
+
+Create a `.env` file in the `backend/` directory with the following variables:
+```
+SECRET_KEY=your_django_secret_key
+DEBUG=True
+DATABASE_URL=your_database_url
+```
+
+### Frontend
+
+Create a `.env` file in the `reactfoodfinder/` directory with the following variables:
+```
+REACT_APP_API_URL=http://localhost:8000/api
+```
+
+## Testing
+
+### Backend
+```
+cd backend
+python manage.py test
+```
+
+### Frontend
+```
+cd reactfoodfinder
+npm test
+```
+
+## Deployment
+
+(Add instructions for deploying both the Django backend and React frontend to your preferred hosting platform.)
+
+## Contributing
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature-name`)
+3. Make your changes and commit them (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature-name`)
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License.
