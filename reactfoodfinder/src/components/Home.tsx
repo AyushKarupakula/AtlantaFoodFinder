@@ -20,10 +20,7 @@ function Home() {
       {showRestaurants ? (
         <RestaurantList />
       ) : (
-        <>
-          <MapSection />
-          <h2>Nearby Restaurants</h2>
-        </>
+        <MapSection />
       )}
     </div>
   );
