@@ -1,25 +1,57 @@
-import React from 'react';
-import './SearchSection.css'; // We'll create this file for custom styles
+import React, { useState } from 'react';
+import './SearchSection.css';
 
-interface SearchSectionProps {
-  onFindFood: () => void;
-}
+const cuisineOptions = [
+  'All Cuisines',
+  'American',
+  'Italian',
+  'Chinese',
+  'Japanese',
+  'Mexican',
+  'Indian',
+  'Thai',
+  'Mediterranean',
+  'French',
+  'Greek',
+  'Korean',
+  'Vietnamese',
+  'Spanish',
+  'Middle Eastern',
+  'Caribbean'
+];
 
-function SearchSection({ onFindFood }: SearchSectionProps) {
+function SearchSection() {
+  const [selectedCuisine, setSelectedCuisine] = useState('All Cuisines');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleCuisineChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCuisine(event.target.value);
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <div className="search-section">
-      <input
-        type="text"
-        placeholder="Search for restaurants or cuisines..."
-        className="search-input"
-      />
-      <select className="cuisine-select">
-        <option value="">All Cuisines</option>
-        {/* Add more cuisine options here */}
-      </select>
-      <button onClick={onFindFood} className="find-food-button">
-        Find Food!
-      </button>
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search for restaurants..."
+          className="search-input"
+        />
+        <select 
+          value={selectedCuisine} 
+          onChange={handleCuisineChange}
+          className="cuisine-dropdown"
+        >
+          {cuisineOptions.map((cuisine) => (
+            <option key={cuisine} value={cuisine}>{cuisine}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
