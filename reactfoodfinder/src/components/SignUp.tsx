@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import atlantaFoodImage from '/Users/ayushkarupakula/AtlantaFoodFinder/reactfoodfinder/src/components/assets/atlanta-food.jpg'; // Make sure to add this image to your assets folder
+import atlantaFoodImage from './assets/atlanta-food.jpg'; // Updated import path
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
