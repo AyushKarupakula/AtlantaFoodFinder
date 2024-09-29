@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -42,6 +43,9 @@ const Login: React.FC = () => {
           </InputGroup>
           <SubmitButton type="submit">Sign In</SubmitButton>
         </LoginForm>
+        <p>
+          Don't have an account? <Link to="/signup">Sign up here</Link>
+        </p>
       </FormSection>
     </LoginContainer>
   );
