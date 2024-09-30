@@ -1,10 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 
 const Header: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate(); // Add this line
+
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // This will redirect to the home page after logout
+  };
 
   return (
     <HeaderContainer>
@@ -22,7 +28,7 @@ const Header: React.FC = () => {
         {isAuthenticated ? (
           <>
             <NavLink to="/account">My Account</NavLink>
-            <LogoutButton onClick={logout}>Log Out</LogoutButton>
+            <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
           </>
         ) : (
           <>
