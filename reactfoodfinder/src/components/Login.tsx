@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login attempted with:', email, password);
     // Here you would typically perform authentication
-    // For now, we'll just redirect to the home page
+    login(); // Set the authenticated state to true
     navigate('/');
   };
 
