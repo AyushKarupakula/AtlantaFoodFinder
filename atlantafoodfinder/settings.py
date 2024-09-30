@@ -27,7 +27,11 @@ INSTALLED_APPS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  # Global templates directory (if you have one)
+            os.path.join(BASE_DIR, 'users', 'templates'),  # Add users app templates directory
+            os.path.join(BASE_DIR, 'restaurants', 'templates'),  # Add restaurants app templates directory
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
