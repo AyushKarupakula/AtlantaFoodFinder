@@ -1,0 +1,26 @@
+<!-- users/templates/users/dashboard.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+  <p>Welcome, {{ user.username }}!</p>
+  
+  <div class="dashboard-links">
+      <a href="{% url 'profile' %}">View Profile</a> |
+      <a href="{% url 'logout' %}">Logout</a>
+  </div>
+  
+  <h2>Your Recent Activities</h2>
+  <ul>
+    <!-- Example content. Replace or populate with real data -->
+    <li><strong>Review Posted:</strong> You reviewed "Joe's Pizza" - 5 Stars</li>
+    <li><strong>Favorite Added:</strong> "Mama's Kitchen" was added to your favorites.</li>
+    <li><strong>Review Liked:</strong> You liked a review on "Dragon Sushi".</li>
+  </ul>
+  
+  <h2>Explore More</h2>
+  <ul>
+    <li><a href="{% url 'restaurant_list' %}">Browse Restaurants</a></li>
+    <li><a href="{% url 'search_results' %}">Search for Cuisines</a></li>
+  </ul>
+{% endblock %}
