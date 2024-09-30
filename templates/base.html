@@ -28,11 +28,11 @@
                 <li><a href="/" class="fade-in"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/cuisines" class="fade-in"><i class="fas fa-utensils"></i> Cuisines</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="/dashboard" class="fade-in"><i class="fas fa-user"></i> My Account</a></li>
-                    <li><a href="/logout" class="fade-in"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a href="/users/dashboard" class="fade-in"><i class="fas fa-user"></i> My Account</a></li>
+                    <li><a href="users/logout" class="fade-in"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 {% else %}
-                    <li><a href="/login" class="fade-in"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                    <li><a href="/signup" class="fade-in"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                    <li><a href="{% url 'login' %}" class="fade-in"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                    <li><a href="/users/signup" class="fade-in"><i class="fas fa-user-plus"></i> Sign Up</a></li>
                 {% endif %}
             </ul>
         </nav>
