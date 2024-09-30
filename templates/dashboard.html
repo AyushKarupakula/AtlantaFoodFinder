@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="dashboard-container">
+    <h1>Dashboard</h1>
+    <div class="dashboard-stats">
+      <div class="stat">
+        <h2>Users</h2>
+        <p>{{ user_count }}</p>
+      </div>
+      <div class="stat">
+        <h2>Posts</h2>
+        <p>{{ post_count }}</p>
+      </div>
+    </div>
+    <div class="dashboard-actions">
+      {% comment %} <a href="{% url 'view_users' %}">View Users</a> 
+      TODO make favorites page
+      {% endcomment %}
+    </div>
+  </div>
+{% endblock %}
