@@ -10,6 +10,17 @@
       <a href="{% url 'logout' %}">Logout</a>
   </div>
   
+  <h2>Your Favorite Restaurants</h2>
+  <ul>
+    {% for favorite in user.userfavorite_set.all %}
+      <li>
+        <a href="{% url 'restaurant_detail' favorite.restaurant.pk %}">{{ favorite.restaurant.name }}</a>
+      </li>
+    {% empty %}
+      <li>No favorite restaurants yet.</li>
+    {% endfor %}
+  </ul>
+
   <h2>Your Recent Activities</h2>
   <ul>
     <!-- Example content. Replace or populate with real data -->
