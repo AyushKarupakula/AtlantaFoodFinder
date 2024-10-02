@@ -97,7 +97,7 @@
                 <div class="restaurant-card-content">
                     <h3>{{ restaurant.name }}</h3>
                     <p><strong>Cuisine:</strong> {{ restaurant.cuisine }}</p>
-                    <p><strong>Average Rating:</strong> {{ restaurant.avg_rating|default:"N/A" }} ⭐</p>
+                    <!-- <p><strong>Average Rating:</strong> {{ restaurant.avg_rating|default:"N/A" }} ⭐</p> -->
                     <p><strong>Address:</strong> {{ restaurant.address }}</p>
                     <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn-view">View Details</a>
                 </div>
