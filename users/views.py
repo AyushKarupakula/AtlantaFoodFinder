@@ -8,6 +8,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin  # For requiring login in class-based views
 
+from django.views.generic import View
+
 
 # Sign Up View using CustomUserCreationForm
 class SignUpView(CreateView):
@@ -40,8 +42,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 # Logout View with a confirmation page
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
+    http_method_names = ['post']
     template_name = 'users/logout.html'
-    next_page = 'login'  # Redirect to login after logging out
+    next_page = ''
+
 
 
 # Profile View requiring login

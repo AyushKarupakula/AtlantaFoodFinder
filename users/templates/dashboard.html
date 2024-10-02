@@ -1,14 +1,14 @@
-<!-- users/templates/users/dashboard.html -->
-{% extends 'base_generic.html' %}
+
+{% extends 'base.html' %}
 
 {% block content %}
   <h1>Dashboard</h1>
   <p>Welcome, {{ user.username }}!</p>
   
-  <div class="dashboard-links">
+  {% comment %} <div class="dashboard-links">
       <a href="{% url 'profile' %}">View Profile</a> |
       <a href="{% url 'logout' %}">Logout</a>
-  </div>
+  </div> {% endcomment %}
   
   <h2>Your Favorite Restaurants</h2>
   <ul>
