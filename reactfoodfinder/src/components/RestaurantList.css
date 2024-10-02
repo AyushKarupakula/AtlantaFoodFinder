@@ -27,9 +27,6 @@
 }
 
 .price-range {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   padding: 4px 8px;
