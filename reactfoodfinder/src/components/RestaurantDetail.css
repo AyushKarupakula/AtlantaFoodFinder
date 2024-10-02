@@ -43,3 +43,23 @@
 .map-container {
   margin-top: 2rem;
 }
+
+.favorite-button {
+  background-color: #ff6347; /* Tomato color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.favorite-button:hover {
+  background-color: #ff4500; /* Darker tomato color */
+}
+
+.favorite-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 99, 71, 0.5);
+}
