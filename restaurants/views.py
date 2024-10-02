@@ -1,4 +1,3 @@
-# views.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -6,7 +5,7 @@ from django.db.models import Q, Avg, Count
 from .models import Restaurant, Cuisine, Review, Favorite
 from .forms import ReviewForm
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.core.serializers import serialize
 
@@ -124,6 +123,7 @@ def restaurant_search(request):
 
 # Function-based view to display detailed information of a restaurant using place_id
 def restaurant_detail(request, place_id):
+    # Fetch restaurant details from the Google Places API
     restaurant_details = get_restaurant_details(place_id)
 
     if not restaurant_details:
@@ -149,6 +149,10 @@ def restaurant_detail(request, place_id):
     if user.is_authenticated:
         is_favorite = Favorite.objects.filter(user=user, restaurant=restaurant).exists()
 
+    # Check if the details contain the latitude and longitude
+    latitude = restaurant_details.get('geometry', {}).get('location', {}).get('lat')
+    longitude = restaurant_details.get('geometry', {}).get('location', {}).get('lng')
+
     reviews = restaurant_details.get('reviews', [])
 
     context = {
@@ -160,6 +164,8 @@ def restaurant_detail(request, place_id):
         'query': request.GET.get('q', ''),
         'selected_cuisine': request.GET.get('cuisine', ''),
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+        'latitude': latitude,
+        'longitude': longitude,
     }
     return render(request, 'restaurant_detail.html', context)
 
@@ -230,6 +236,33 @@ def search_results(request):
     return render(request, 'search_results.html', {'restaurants': [], 'query': query, 'selected_cuisine': cuisine_id})
 
 
+# Add restaurant to favorites
+@login_required
+def add_to_favorites(request, place_id):
+    restaurant = get_object_or_404(Restaurant, place_id=place_id)
+    Favorite.objects.get_or_create(user=request.user, restaurant=restaurant)
+    return redirect('restaurant_detail', place_id=place_id)
+
+
+# Remove restaurant from favorites
+@login_required
+def remove_from_favorites(request, place_id):
+    restaurant = get_object_or_404(Restaurant, place_id=place_id)
+    favorite = Favorite.objects.filter(user=request.user, restaurant=restaurant)
+    if favorite.exists():
+        favorite.delete()
+    return redirect('restaurant_detail', place_id=place_id)
+
+
+# View to list all favorite restaurants
+@login_required
+def view_favorites(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related('restaurant')
+    context = {'favorites': favorites}
+    return render(request, 'view_favorites.html', context)
+
+
+# User dashboard view
 @login_required
 def dashboard(request):
     favorites = Favorite.objects.filter(user=request.user).select_related('restaurant')
