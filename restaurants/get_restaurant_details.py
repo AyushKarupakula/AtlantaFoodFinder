@@ -40,6 +40,17 @@ def get_restaurant_details():
             print(f"  {day}")
     else:
         print("  N/A")
+    
+    print("\nUser Reviews:")
+    reviews = details.get('reviews', [])
+    if reviews:
+        for review in reviews:
+            print(f"- Author: {review.get('author_name', 'N/A')}")
+            print(f"  Rating: {review.get('rating', 'N/A')}")
+            print(f"  Review: {review.get('text', 'N/A')}")
+            print(f"  Time: {review.get('relative_time_description', 'N/A')}\n")
+    else:
+        print("  No reviews available")
 
 if __name__ == '__main__':
     get_restaurant_details()

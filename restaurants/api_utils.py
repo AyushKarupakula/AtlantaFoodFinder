@@ -22,7 +22,7 @@ def get_restaurant_details(place_id):
     url = 'https://maps.googleapis.com/maps/api/place/details/json'
     params = {
         'place_id': place_id,
-        'fields': 'name,formatted_address,formatted_phone_number,website,rating,opening_hours',
+        'fields': 'name,formatted_address,formatted_phone_number,website,rating,opening_hours,reviews',
         'key': settings.GOOGLE_MAPS_API_KEY,
     }
 
