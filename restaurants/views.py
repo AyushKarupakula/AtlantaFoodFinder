@@ -166,7 +166,7 @@ def restaurant_list(request):
         'cuisines': cuisines,
         'average_rating': average_rating or 0,
         'most_popular_cuisine': most_popular_cuisine.name if most_popular_cuisine else 'N/A',
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # If needed
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  
         'top_rated_restaurants': top_rated_restaurants,
     }
     return render(request, 'restaurant_list.html', context)
@@ -187,19 +187,17 @@ def search_restaurants(request):
     error_message = None
 
     if request.method == 'GET' and 'query' in request.GET:
-        # Extract query parameters from the request
-        query = request.GET.get('query')  # The search query like 'Taco Bell'
-        location = request.GET.get('location')  # Expected format: 'lat,lng'
-        radius = request.GET.get('radius', '3000')  # Default to 3000 meters
-        min_rating = float(request.GET.get('min_rating', '0'))  # Default to 0
+        query = request.GET.get('query')  
+        location = request.GET.get('location')  
+        radius = request.GET.get('radius', '3000')  
+        min_rating = float(request.GET.get('min_rating', '0'))  
 
         if not query or not location:
             error_message = 'Query and location are required.'
         else:
-            # Use the Google Places API Key from settings
+
             api_key = settings.GOOGLE_PLACES_API_KEY
 
-            # Construct the URL for Places Text Search API
             places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
             params = {
                 'query': query,
@@ -212,12 +210,9 @@ def search_restaurants(request):
                 response = requests.get(places_url, params=params)
                 response.raise_for_status()
                 data = response.json()
-
-                # Check for API errors
                 if data.get('status') != 'OK':
                     error_message = f"Error from Google Places API: {data.get('status')}"
                 else:
-                    # Filter results by minimum rating
                     results = [
                         place for place in data.get('results', [])
                         if place.get('rating', 0) >= min_rating
@@ -241,7 +236,6 @@ def get_restaurant_details(request):
     else:
         api_key = settings.GOOGLE_PLACES_API_KEY
 
-        # Construct the URL for Place Details API
         details_url = "https://maps.googleapis.com/maps/api/place/details/json"
         params = {
             'place_id': place_id,
@@ -252,8 +246,6 @@ def get_restaurant_details(request):
             response = requests.get(details_url, params=params)
             response.raise_for_status()
             data = response.json()
-
-            # Check for API errors
             if data.get('status') != 'OK':
                 error_message = f"Error from Google Places API: {data.get('status')}"
             else:
@@ -272,7 +264,6 @@ def api_search_restaurants(request):
     results = []
     error_message = None
 
-    # Extract query parameters from the request
     query = request.GET.get('query')  # The search query like 'Pizza'
     location = request.GET.get('location')  # Expected format: 'lat,lng'
     radius = request.GET.get('radius', '3000')  # Default to 3000 meters
@@ -283,7 +274,6 @@ def api_search_restaurants(request):
     else:
         api_key = settings.GOOGLE_PLACES_API_KEY
 
-        # Construct the URL for Places Text Search API
         places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
         params = {
             'query': query,
@@ -297,11 +287,9 @@ def api_search_restaurants(request):
             response.raise_for_status()
             data = response.json()
 
-            # Check for API errors
             if data.get('status') != 'OK':
                 error_message = f"Error from Google Places API: {data.get('status')}"
             else:
-                # Filter results by minimum rating
                 results = [
                     {
                         'name': place.get('name'),

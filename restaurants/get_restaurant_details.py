@@ -2,13 +2,10 @@ import os
 import requests
 
 def get_restaurant_details():
-    # Replace 'YOUR_API_KEY' with your actual Google Places API key
-    api_key = 'AIzaSyDybEBTmKfVLpRvWEjxzDp6rstLh_IQAvE'  # <-- Enter your API key here
+    api_key = 'AIzaSyDybEBTmKfVLpRvWEjxzDp6rstLh_IQAvE'  
 
-    # Replace 'YOUR_PLACE_ID' with the place ID of the restaurant you want details for
-    place_id = 'ChIJB-a9NO0E9YgRRTE_-m4Xrzo'  # <-- Enter the place ID here
+    place_id = 'ChIJB-a9NO0E9YgRRTE_-m4Xrzo'  
 
-    # Construct the URL for Place Details API
     details_url = "https://maps.googleapis.com/maps/api/place/details/json"
     params = {
         'place_id': place_id,
@@ -24,7 +21,6 @@ def get_restaurant_details():
 
     data = response.json()
 
-    # Check for API errors
     if data.get('status') != 'OK':
         print(f"Error from Google Places API: {data.get('status')}")
         print(data.get('error_message', ''))
@@ -32,7 +28,6 @@ def get_restaurant_details():
 
     details = data.get('result', {})
 
-    # Print detailed information
     print(f"Name: {details.get('name', 'N/A')}")
     print(f"Phone Number: {details.get('formatted_phone_number', 'N/A')}")
     print(f"Website: {details.get('website', 'N/A')}")
