@@ -43,6 +43,7 @@ if [ "${OSTYPE:-}" = "cygwin" ] || [ "${OSTYPE:-}" = "msys" ] ; then
 else
     # use the path as-is
     export VIRTUAL_ENV="C:\Users\veerg\Downloads\AFF3\AtlantaFoodFinder\venv"
+
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"

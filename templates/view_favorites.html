@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>My Favorite Restaurants</h1>
+
+{% if favorites %}
+    <ul>
+    {% for favorite in favorites %}
+        <li>
+            <h2>{{ favorite.restaurant.name }}</h2>
+            <p>Address: {{ favorite.restaurant.formatted_address }}</p>
+            <p>Rating: {{ favorite.restaurant.rating }}</p>
+            <a href="{% url 'restaurant_detail' favorite.restaurant.place_id %}" class="btn-view">View Details</a>
+            <a href="{% url 'remove_favorite' favorite.restaurant.place_id %}" class="btn-remove">Remove from Favorites</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no favorite restaurants.</p>
+{% endif %}
+{% endblock %}

@@ -1,13 +1,14 @@
 # users/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin  # For requiring login in class-based views
 
+from restaurants.models import Favorite
 from django.views.generic import View
 
 
@@ -35,16 +36,20 @@ class LoginUserView(LoginView):
 
 
 # Dashboard View - Only accessible to logged-in users
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(LoginRequiredMixin, ListView):
     template_name = 'dashboard.html'
     login_url = 'login'  # Redirects to login if not authenticated
+    context_object_name = 'favorites'
+    
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user)
 
 
 # Logout View with a confirmation page
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
     http_method_names = ['post']
     template_name = 'users/logout.html'
-    next_page = ''
+    next_page = 'login'
 
 
 

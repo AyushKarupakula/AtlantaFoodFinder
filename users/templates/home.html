@@ -1,5 +1,126 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<h1>Welcome to Atlanta Food-Finder</h1>
-<p>This is your go-to platform for finding and reviewing restaurants in Atlanta.</p>
+<div class="container main-container">
+    <h1 class="welcome-title">Welcome to Atlanta Food-Finder</h1>
+    <p class="welcome-description">This is your go-to platform for finding and reviewing restaurants in Atlanta.</p>
+
+    <div class="cuisine-dropdown">
+        <button class="dropbtn">Select Cuisine <i class="fas fa-chevron-down"></i></button>
+        <div class="dropdown-content">
+            <a href="{% url 'restaurant_by_cuisine' cuisine='all' %}">All Cuisines</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='italian' %}">Italian</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='indian' %}">Indian</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='chinese' %}">Chinese</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='mediterranean' %}">Mediterranean</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='mexican' %}">Mexican</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='thai' %}">Thai</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='japanese' %}">Japanese</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='american' %}">American</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='french' %}">French</a>
+            <a href="{% url 'restaurant_by_cuisine' cuisine='greek' %}">Greek</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .welcome-title {
+        font-size: 2.5rem;
+        color: #333;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .welcome-description {
+        font-size: 1.2rem;
+        color: #666;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .cuisine-dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .dropbtn {
+        background-color: #007bff;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        border-radius: 5px;
+    }
+
+    .dropbtn i {
+        float: right;
+        margin-top: 3px;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 100%;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .cuisine-dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .cuisine-dropdown:hover .dropbtn {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropBtn = document.querySelector('.dropbtn');
+        const dropdownContent = document.querySelector('.dropdown-content');
+
+        dropBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        window.addEventListener('click', function(e) {
+            if (!e.target.matches('.dropbtn')) {
+                dropdownContent.style.display = 'none';
+            }
+        });
+    });
+</script>
 {% endblock %}

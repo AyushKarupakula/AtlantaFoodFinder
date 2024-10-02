@@ -21,6 +21,7 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+
 class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -30,8 +31,7 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s review for {self.restaurant.name}"
-    
-    
+
 class Favorite(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorites')
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='favorited_by')

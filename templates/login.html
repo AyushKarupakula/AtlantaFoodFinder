@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-<div class="auth-wrapper login-wrapper">
-  <div class="auth-content">
+<div class="auth-container">
+  <div class="auth-card">
     <div class="auth-header">
       <h1>Taste of Atlanta</h1>
       <p>Savor the flavors, one login at a time</p>
@@ -13,7 +18,8 @@
       {% for field in form %}
         <div class="input-group">
           <div class="input-icon">
-            {% if field.name == 'username' %}🍽️{% else %}🔒{% endif %}
+            {% if field.name == 'username' %}<i class="fas fa-user"></i>
+            {% else %}<i class="fas fa-lock"></i>{% endif %}
           </div>
           {{ field }}
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -29,17 +35,233 @@
       </button>
     </form>
     <div class="auth-footer">
-      <p>New to the food scene? <a href="{% url 'signup' %}">Join the feast</a></p>
-    </div>
-  </div>
-  <div class="auth-image">
-    <div class="floating-elements">
-      <span class="floating-element">🍔</span>
-      <span class="floating-element">🍕</span>
-      <span class="floating-element">🍣</span>
-      <span class="floating-element">🥗</span>
-      <span class="floating-element">🍷</span>
+      <p>New to the food scene? <a href="{% url 'signup' %}" class="signup-link">Join the feast</a></p>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #4ecdc4;
+    --accent-color: #45b7d8;
+    --text-color: #2d3436;
+    --background-color: #f0f3f5;
+    --card-background: #ffffff;
+    --error-color: #e74c3c;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  }
+
+  .auth-card {
+    background-color: var(--card-background);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .auth-header h1 {
+    font-size: 2.8rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .auth-header p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    opacity: 0.8;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+  }
+
+  .input-group {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .auth-form input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+    background-color: #f9f9f9;
+  }
+
+  .auth-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(69, 183, 216, 0.1);
+    background-color: #ffffff;
+  }
+
+  .auth-form input:focus + .input-icon {
+    color: var(--accent-color);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .auth-form label {
+    position: absolute;
+    left: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    color: #777;
+    font-size: 1rem;
+  }
+
+  .auth-form input:focus + .input-icon + label,
+  .auth-form input:not(:placeholder-shown) + .input-icon + label {
+    top: -0.5rem;
+    left: 1rem;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    background-color: var(--card-background);
+    padding: 0 0.5rem;
+  }
+
+  .input-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease-in-out;
+  }
+
+  .auth-form input:focus ~ .input-line {
+    width: 100%;
+  }
+
+  .btn-submit {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-submit:hover {
+    background-color: #ff5252;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+  }
+
+  .btn-animation {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: all 0.5s;
+  }
+
+  .btn-submit:hover .btn-animation {
+    left: 100%;
+  }
+
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  .signup-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .signup-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .auth-card {
+      padding: 2rem;
+    }
+
+    .auth-header h1 {
+      font-size: 2.2rem;
+    }
+
+    .auth-form input {
+      font-size: 0.9rem;
+    }
+
+    .btn-submit {
+      font-size: 1rem;
+    }
+  }
+</style>
 {% endblock %}
