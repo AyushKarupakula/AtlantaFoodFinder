@@ -63,6 +63,24 @@
         </div>
     </div>
 
+    <!-- User Reviews Section -->
+    <div class="reviews-section">
+        <h3>User Reviews</h3>
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>Author:</strong> {{ review.author_name }}</p>
+                    <p><strong>Rating:</strong> {{ review.rating }} ⭐</p>
+                    <p><strong>Review:</strong> {{ review.text }}</p>
+                    <p><strong>Time:</strong> {{ review.relative_time_description }}</p>
+                    <hr> <!-- Separator line between reviews -->
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No Google reviews available.</p>
+        {% endif %}
+    </div>
+
     <div class="back-button-container">
         <a href="{% url 'search_results' %}?q={{ query }}&cuisine={{ selected_cuisine }}" class="btn-back">
             <i class="fas fa-arrow-left mr-2"></i> Back to Search
@@ -187,6 +205,15 @@
 
     .website-link:hover {
         text-decoration: underline;
+    }
+
+    .reviews-section {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .review {
+        margin-bottom: 1rem;
     }
 
     .back-button-container {

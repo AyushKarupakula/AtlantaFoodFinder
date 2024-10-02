@@ -99,7 +99,13 @@ def restaurant_search(request):
 # Function-based view to display detailed information of a restaurant using place_id
 def restaurant_detail(request, place_id):
     restaurant_details = get_restaurant_details(place_id)
-    return render(request, 'restaurant_detail.html', {'restaurant': restaurant_details})
+    reviews = restaurant_details.get('reviews', [])  # Get reviews from details
+    context = {
+        'restaurant': restaurant_details,
+        'reviews': reviews,
+    }
+    return render(request, 'restaurant_detail.html', context)
+
 
 # Function-based view to list all restaurants
 def restaurant_list(request):
