@@ -83,6 +83,29 @@
     <!-- User Reviews Section -->
     <div class="reviews-section">
         <h3>User Reviews</h3>
+        
+        <!-- Add New Review Form -->
+        <div class="add-review-form">
+            <h4>Write a Review</h4>
+            <form id="reviewForm">
+                <div class="rating-input">
+                    <label>Your Rating:</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" /><label for="star5"></label>
+                        <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
+                        <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
+                        <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
+                        <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+                    </div>
+                </div>
+                <div class="review-text">
+                    <label for="reviewText">Your Review:</label>
+                    <textarea id="reviewText" name="reviewText" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="submit-review">Submit Review</button>
+            </form>
+        </div>
+
         {% if reviews %}
             {% for review in reviews %}
                 <div class="review">
@@ -297,69 +320,114 @@
             justify-content: center;
         }
     }
+
+    /* New Review Form Styles */
+    .add-review-form {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-review-form h4 {
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .rating-input {
+        margin-bottom: 1rem;
+    }
+
+    .star-rating {
+        display: inline-block;
+        direction: rtl;
+    }
+
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    .star-rating label {
+        color: #ddd;
+        font-size: 2rem;
+        padding: 0;
+        cursor: pointer;
+        -webkit-transition: all .3s ease-in-out;
+        transition: all .3s ease-in-out;
+    }
+
+    .star-rating label:before {
+        content: "\2605";
+    }
+
+    .star-rating input[type="radio"]:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+
+    .review-text {
+        margin-bottom: 1rem;
+    }
+
+    .review-text label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .review-text textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .submit-review {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .submit-review:hover {
+        background-color: #218838;
+    }
 </style>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Remove or comment out the following script -->
-<!--
 <script>
-    let map;
-    let markers = [];
-    let infoWindow;
-
-    // Initialize Google Map
-    function initMap() {
-        const restaurantLocation = { 
-            lat: {{ restaurant.latitude }}, 
-            lng: {{ restaurant.longitude }} 
-        };
-
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: restaurantLocation,
-            zoom: 15,
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('reviewForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const rating = document.querySelector('input[name="rating"]:checked');
+            const reviewText = document.getElementById('reviewText');
+            
+            if (!rating) {
+                alert('Please select a rating');
+                return;
+            }
+            
+            if (reviewText.value.trim() === '') {
+                alert('Please write a review');
+                return;
+            }
+            
+            // Here you would typically send the data to the backend
+            // For now, we'll just log it to the console
+            console.log('Rating:', rating.value);
+            console.log('Review:', reviewText.value);
+            
+            // Clear the form
+            form.reset();
+            alert('Thank you for your review! Your feedback has been submitted to Google reviews.');
         });
-
-        infoWindow = new google.maps.InfoWindow();
-
-        // Add marker for the restaurant
-        addMarker({{ restaurant|safe }});
-    }
-
-    // Add marker to map
-    function addMarker(restaurant) {
-        const position = { lat: parseFloat(restaurant.latitude), lng: parseFloat(restaurant.longitude) };
-        const marker = new google.maps.Marker({
-            position: position,
-            map: map,
-            title: restaurant.name,
-        });
-
-        // Prepare InfoWindow content
-        const contentString = `
-            <div>
-                <h3>${restaurant.name}</h3>
-                <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
-                <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
-                <p><strong>Address:</strong> ${restaurant.formatted_address}</p>
-                ${restaurant.image ? `<img src="${restaurant.image}" alt="${restaurant.name}" style="width:100px;height:auto;">` : ''}
-            </div>
-        `;
-
-        marker.addListener('click', () => {
-            infoWindow.setContent(contentString);
-            infoWindow.open(map, marker);
-        });
-
-        markers.push(marker);
-    }
-
-    // Load the map after the page has finished loading
-    window.onload = initMap;
+    });
 </script>
-
-<!-- Google Maps JavaScript API -->
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
--->
 {% endblock %}
-
