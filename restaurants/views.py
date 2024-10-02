@@ -1,3 +1,5 @@
+# views.py
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
@@ -19,7 +21,7 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY  # If you're using Google Maps JavaScript API in templates
         return context
 def home(request):
     """Home view to display all restaurants and cuisines."""
@@ -38,7 +40,7 @@ def cuisine_list(request):
     cuisines = Cuisine.objects.all()
     context = {
         'cuisines': cuisines,
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # If needed
     }
     return render(request, 'cuisine_list.html', context)
 
@@ -70,9 +72,10 @@ def toggle_favorite(request, pk):
         user.favorite_restaurants.add(restaurant)
     return redirect('restaurant_detail', pk=pk)
 
-# Function-based view for searching restaurants using the API
+
 def restaurant_search(request):
     query = request.GET.get('q', '')  # Get the search query from the user input
+
     if query:
         # Call the search API and get restaurant results
         restaurants = search_restaurants(query)
@@ -95,7 +98,9 @@ def restaurant_list(request):
     context = {
         'restaurants': restaurant_data,
         'cuisines': cuisines,
+
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+
     }
     return render(request, 'restaurant_list.html', context)
 
@@ -148,3 +153,4 @@ def search_results(request):
         return render(request, 'search_results.html', {'restaurants': restaurants, 'query': query, 'selected_cuisine': cuisine_id})
 
     return render(request, 'search_results.html', {'restaurants': [], 'query': query, 'selected_cuisine': cuisine_id})
+
