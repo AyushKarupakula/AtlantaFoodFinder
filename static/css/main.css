@@ -191,3 +191,49 @@ h3 {
     grid-template-columns: 1fr;
   }
 }
+
+.nav-links {
+  display: flex;
+  justify-content: space-between;
+  list-style-type: none;
+  color:rgba(255, 255, 255, 0.5);
+}
+.nav-links a {
+background-color: var(--primary-color);
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+text-decoration: none;
+transition: background-color 0.3s ease;
+}
+.nav-links li {
+display: inline-block;
+margin-right: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  margin-left: 10px;
+}
+.logo-image {
+  margin-right: 10px;
+}
+.nav-links a:hover {
+background-color: #c0392b;
+}
+header nav {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+header img {
+max-width: 200px; /* adjust this value to your desired logo size */
+height: auto;
+}
