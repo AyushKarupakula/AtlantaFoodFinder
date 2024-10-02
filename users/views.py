@@ -44,7 +44,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 class CustomLogoutView(LoginRequiredMixin, LogoutView):
     http_method_names = ['post']
     template_name = 'users/logout.html'
-    next_page = ''
+    next_page = 'login'
 
 
 

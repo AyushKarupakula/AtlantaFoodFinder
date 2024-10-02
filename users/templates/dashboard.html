@@ -13,13 +13,12 @@
     <h1 class="welcome-message">Welcome, {{ user.username }}!</h1>
     
     <div class="dashboard-grid">
-      <!-- Favorite Restaurants Section -->
       <div class="dashboard-card">
         <h2 class="card-title"><i class="fas fa-heart"></i> Your Favorite Restaurants</h2>
         <ul class="dashboard-list">
           {% for favorite in favorites %}
             <li class="dashboard-list-item">
-              <a href="{% url 'restaurant_detail' favorite.restaurant.place_id %}" class="restaurant-link">
+              <a href="{% url 'restaurant_detail' favorite.restaurant.name %}" class="restaurant-link">
                 <i class="fas fa-utensils"></i> {{ favorite.restaurant.name }}
               </a>
             </li>
@@ -29,7 +28,6 @@
         </ul>
       </div>
 
-      <!-- Your Recent Activities Section (Static content for demonstration) -->
       <div class="dashboard-card">
         <h2 class="card-title"><i class="fas fa-history"></i> Your Recent Activities</h2>
         <ul class="dashboard-list">
@@ -48,7 +46,6 @@
         </ul>
       </div>
       
-      <!-- Explore More Section -->
       <div class="dashboard-card">
         <h2 class="card-title"><i class="fas fa-compass"></i> Explore More</h2>
         <div class="dashboard-buttons">
