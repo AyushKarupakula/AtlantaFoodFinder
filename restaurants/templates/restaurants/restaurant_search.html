@@ -1,0 +1,10 @@
+<!-- restaurant_search.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Restaurant Search</h1>
+<form method="get" action="{% url 'restaurant_search' %}">
+    <input type="text" name="q" placeholder="Search for restaurants..." required>
+    <button type="submit">Search</button>
+</form>
+{% endblock %}

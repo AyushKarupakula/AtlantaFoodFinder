@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Welcome to the Restaurant Finder</h1>
+<h2>List of Restaurants</h2>
+<ul>
+    {% for restaurant in restaurants %}
+        <li><a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></li>
+    {% endfor %}
+</ul>
+
+<h2>List of Cuisines</h2>
+<ul>
+    {% for cuisine in cuisines %}
+        <li>{{ cuisine.name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

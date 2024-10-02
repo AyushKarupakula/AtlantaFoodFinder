@@ -1,12 +1,13 @@
 <!-- search_results.html -->
 {% extends 'base.html' %}
+
 {% block content %}
 <h1>Search Results for "{{ query }}"</h1>
 
-<!-- Debug: Check if restaurants context is being passed -->
-<p>Number of restaurants found: {{ restaurants|length }}</p>  <!-- Use `length` for list length -->
+<!-- Display the number of restaurants found -->
+<p>Number of restaurants found: {{ restaurants|length }}</p>
 
-<!-- Display restaurants if any -->
+<!-- Display the list of restaurants if any are found -->
 {% if restaurants %}
     <ul>
     {% for restaurant in restaurants %}
@@ -16,10 +17,9 @@
             {% if restaurant.rating %}
                 <p>Rating: {{ restaurant.rating }}</p>
             {% endif %}
-            <p>Place ID: {{ restaurant.place_id }}</p>
             
-            <!-- Link to detailed view using the place_id -->
-            <a href="{% url 'restaurant_detail' restaurant.place_id %}">View Details</a>
+            <!-- Link to detailed view using the place_id and passing query parameters -->
+            <a href="{% url 'restaurant_detail' restaurant.place_id %}?q={{ query }}&cuisine={{ selected_cuisine }}">View Details</a>
         </li>
     {% endfor %}
     </ul>
