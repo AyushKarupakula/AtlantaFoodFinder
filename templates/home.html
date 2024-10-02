@@ -12,8 +12,18 @@
             <select name="cuisine" id="cuisine-filter">
                 <option value="">All Cuisines</option>
                 {% for cuisine in cuisines %}
-                <option value="{{ cuisine.id }}">{{ cuisine.name }}</option>
+                    <option value="{{ cuisine.id }}">{{ cuisine.name }}</option>
                 {% endfor %}
+                {% if 'italian' not in cuisines %}<option value="italian">Italian</option>{% endif %}
+                {% if 'indian' not in cuisines %}<option value="indian">Indian</option>{% endif %}
+                {% if 'chinese' not in cuisines %}<option value="chinese">Chinese</option>{% endif %}
+                {% if 'mediterranean' not in cuisines %}<option value="mediterranean">Mediterranean</option>{% endif %}
+                {% if 'mexican' not in cuisines %}<option value="mexican">Mexican</option>{% endif %}
+                {% if 'thai' not in cuisines %}<option value="thai">Thai</option>{% endif %}
+                {% if 'japanese' not in cuisines %}<option value="japanese">Japanese</option>{% endif %}
+                {% if 'american' not in cuisines %}<option value="american">American</option>{% endif %}
+                {% if 'french' not in cuisines %}<option value="french">French</option>{% endif %}
+                {% if 'greek' not in cuisines %}<option value="greek">Greek</option>{% endif %}
             </select>
             <button type="submit"><i class="fas fa-search"></i> Find Food</button>
         </form>

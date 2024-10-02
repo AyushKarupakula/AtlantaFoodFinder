@@ -207,6 +207,12 @@
         margin-top: 0.5rem;
         font-weight: bold;
     }
+
+    .restaurant-distance {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
 </style>
 {% endblock %}
 
@@ -253,6 +259,15 @@
 
         // Initialize filters
         updateFilters();
+
+        // Add distance information to restaurant cards
+        restaurantCards.forEach(card => {
+            const distance = parseFloat(card.dataset.distance) || 0;
+            const distanceInfo = document.createElement('p');
+            distanceInfo.className = 'restaurant-distance';
+            distanceInfo.innerHTML = `<i class="fas fa-road"></i> ${distance.toFixed(1)} km`;
+            card.insertBefore(distanceInfo, card.querySelector('.view-details-btn'));
+        });
     });
 </script>
 {% endblock %}
