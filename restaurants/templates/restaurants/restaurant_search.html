@@ -1,10 +1,8 @@
-<!-- templates/restaurant_search.html -->
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Restaurant Search</title>
-    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+   
 </head>
 <body>
     <h1>Restaurant Search</h1>
@@ -35,15 +33,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('search-form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent form submission
+                event.preventDefault(); 
 
-                // Get form values
                 const query = document.getElementById('query').value;
                 const location = document.getElementById('location').value;
                 const radius = document.getElementById('radius').value;
                 const min_rating = document.getElementById('min_rating').value;
 
-                // Construct the API URL with query parameters
                 const params = new URLSearchParams({
                     query: query,
                     location: location,
