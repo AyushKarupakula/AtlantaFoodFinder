@@ -80,12 +80,6 @@
         </div>
     </div>
 
-    <!-- Google Map Section -->
-    <div class="map-section" style="margin-bottom: 2rem;">
-        <h3>Location on Map</h3>
-        <div id="map" style="height: 400px; width: 100%;"></div>
-    </div>
-
     <!-- User Reviews Section -->
     <div class="reviews-section">
         <h3>User Reviews</h3>
@@ -307,39 +301,65 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Google Maps JavaScript API -->
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap">
-</script>
-
+<!-- Remove or comment out the following script -->
+<!--
 <script>
-// Initialize and add the map
-function initMap() {
-    // The location of the restaurant
-    const restaurantLocation = { lat: {{ restaurant.latitude }}, lng: {{ restaurant.longitude }} };
+    let map;
+    let markers = [];
+    let infoWindow;
 
-    // The map, centered at the restaurant location
-    const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 15,
-        center: restaurantLocation,
-    });
+    // Initialize Google Map
+    function initMap() {
+        const restaurantLocation = { 
+            lat: {{ restaurant.latitude }}, 
+            lng: {{ restaurant.longitude }} 
+        };
 
-    // The marker, positioned at the restaurant location
-    const marker = new google.maps.Marker({
-        position: restaurantLocation,
-        map: map,
-        title: "{{ restaurant.name }}",
-    });
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: restaurantLocation,
+            zoom: 15,
+        });
 
-    // Optional: Add an InfoWindow
-    const infoWindow = new google.maps.InfoWindow({
-        content: `<h3>{{ restaurant.name }}</h3><p>{{ restaurant.formatted_address }}</p>`,
-    });
+        infoWindow = new google.maps.InfoWindow();
 
-    marker.addListener('click', () => {
-        infoWindow.open(map, marker);
-    });
-}
+        // Add marker for the restaurant
+        addMarker({{ restaurant|safe }});
+    }
+
+    // Add marker to map
+    function addMarker(restaurant) {
+        const position = { lat: parseFloat(restaurant.latitude), lng: parseFloat(restaurant.longitude) };
+        const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title: restaurant.name,
+        });
+
+        // Prepare InfoWindow content
+        const contentString = `
+            <div>
+                <h3>${restaurant.name}</h3>
+                <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
+                <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
+                <p><strong>Address:</strong> ${restaurant.formatted_address}</p>
+                ${restaurant.image ? `<img src="${restaurant.image}" alt="${restaurant.name}" style="width:100px;height:auto;">` : ''}
+            </div>
+        `;
+
+        marker.addListener('click', () => {
+            infoWindow.setContent(contentString);
+            infoWindow.open(map, marker);
+        });
+
+        markers.push(marker);
+    }
+
+    // Load the map after the page has finished loading
+    window.onload = initMap;
 </script>
+
+<!-- Google Maps JavaScript API -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+-->
 {% endblock %}
 
