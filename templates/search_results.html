@@ -1,1 +1,30 @@
- 
+<!-- search_results.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h1>Search Results for "{{ query }}"</h1>
+
+<!-- Debug: Check if restaurants context is being passed -->
+<p>Number of restaurants found: {{ restaurants|length }}</p>  <!-- Use `length` for list length -->
+
+<!-- Display restaurants if any -->
+{% if restaurants %}
+    <ul>
+    {% for restaurant in restaurants %}
+        <li>
+            <h2>{{ restaurant.name }}</h2>
+            <p>Address: {{ restaurant.vicinity }}</p>  <!-- Use `vicinity` for address from API response -->
+            {% if restaurant.rating %}
+                <p>Rating: {{ restaurant.rating }}</p>
+            {% endif %}
+            <p>Place ID: {{ restaurant.place_id }}</p>
+            
+            <!-- Link to detailed view using the place_id -->
+            <a href="{% url 'restaurant_detail' restaurant.place_id %}">View Details</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No restaurants found matching your criteria.</p>
+{% endif %}
+
+{% endblock %}

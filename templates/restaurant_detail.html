@@ -1,72 +1,22 @@
+<!-- restaurant_detail.html -->
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{{ restaurant.name }} - AtlantaFoodFinder{% endblock %}
-
 {% block content %}
-<div class="restaurant-detail">
-    <div class="restaurant-header">
-        <h1>{{ restaurant.name }}</h1>
-        <div class="restaurant-meta">
-            <span>{{ restaurant.cuisine }}</span>
-            <span>{{ restaurant.rating }} ⭐</span>
-            <span>{{ restaurant.price_range }}</span>
-        </div>
-    </div>
-    
-    <div class="restaurant-content">
-        <div class="restaurant-images">
-            <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
-        </div>
-        
-        <div class="restaurant-info">
-            <h2>About</h2>
-            <p>{{ restaurant.description }}</p>
-            
-            <h2>Location & Hours</h2>
-            <p>{{ restaurant.address }}</p>
-            <p>{{ restaurant.hours }}</p>
-            
-            <h2>Contact</h2>
-            <p>Phone: {{ restaurant.phone }}</p>
-            <p>Website: <a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
-            
-            <div class="action-buttons">
-                <a href="https://www.google.com/maps/dir/?api=1&destination={{ restaurant.address|urlencode }}" class="btn btn-primary" target="_blank">Get Directions</a>
-                <button class="btn btn-secondary favorite-btn" data-id="{{ restaurant.id }}">
-                    <i class="fas fa-heart"></i> Save to Favorites
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="restaurant-reviews">
-        <h2>Reviews</h2>
-        {% for review in reviews %}
-        <div class="review-card">
-            <div class="review-header">
-                <span class="review-author">{{ review.user.username }}</span>
-                <span class="review-rating">{{ review.rating }} ⭐</span>
-            </div>
-            <p class="review-content">{{ review.content }}</p>
-            <span class="review-date">{{ review.created_at|date:"F d, Y" }}</span>
-        </div>
-        {% empty %}
-        <p>No reviews yet. Be the first to review this restaurant!</p>
-        {% endfor %}
-        
-        {% if user.is_authenticated %}
-        <form class="review-form" method="post" action="{% url 'add_review' restaurant.id %}">
-            {% csrf_token %}
-            <h3>Write a Review</h3>
-            {{ review_form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit Review</button>
-        </form>
-        {% endif %}
-    </div>
-</div>
-{% endblock %}
+<h1>{{ restaurant.name }}</h1>
+<p>Address: {{ restaurant.formatted_address }}</p>
+<p>Phone: {{ restaurant.formatted_phone_number }}</p>
+<p>Website: <a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
+<p>Rating: {{ restaurant.rating }}</p>
 
-{% block extra_js %}
-<script src="{% static 'js/restaurant_detail.js' %}"></script>
+<h3>Opening Hours</h3>
+{% if restaurant.opening_hours %}
+    <ul>
+    {% for hour in restaurant.opening_hours.weekday_text %}
+        <li>{{ hour }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No opening hours available.</p>
+{% endif %}
+
+<a href="{% url 'restaurant_search' %}">Back to Search</a>  <!-- Link to go back to the search page -->
 {% endblock %}

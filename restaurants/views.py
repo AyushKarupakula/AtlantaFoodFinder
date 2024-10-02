@@ -7,7 +7,11 @@ from .forms import ReviewForm
 from django.conf import settings
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.core.serializers import serialize
+import requests
+from .api_utils import search_restaurants, get_restaurant_details
 
+# Class-based view for home page
 class HomeView(ListView):
     model = Restaurant
     template_name = 'home.html'
@@ -17,17 +21,19 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
         return context
+def home(request):
+    """Home view to display all restaurants and cuisines."""
+    restaurants = Restaurant.objects.all()
+    cuisines = Cuisine.objects.all()
+    context = {
+        'restaurants': restaurants,
+        'cuisines': cuisines,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+    }
+    return render(request, 'home.html', context)
 
-class RestaurantDetailView(DetailView):
-    model = Restaurant
-    template_name = 'restaurant_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['review_form'] = ReviewForm()
-        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
-        return context
-
+# Function-based view to list all cuisines
 def cuisine_list(request):
     cuisines = Cuisine.objects.all()
     context = {
@@ -36,6 +42,7 @@ def cuisine_list(request):
     }
     return render(request, 'cuisine_list.html', context)
 
+# Function-based view to list restaurants by cuisine
 def restaurant_by_cuisine(request, cuisine_id):
     cuisine = get_object_or_404(Cuisine, pk=cuisine_id)
     restaurants = Restaurant.objects.filter(cuisine=cuisine)
@@ -63,106 +70,36 @@ def toggle_favorite(request, pk):
         user.favorite_restaurants.add(restaurant)
     return redirect('restaurant_detail', pk=pk)
 
-def search(request):
-    query = request.GET.get('q')  
+# Function-based view for searching restaurants using the API
+def restaurant_search(request):
+    query = request.GET.get('q', '')  # Get the search query from the user input
     if query:
-       
-        results = Restaurant.objects.filter(name__icontains=query)
-    else:
-        results = Restaurant.objects.none()  
-    
-    return render(request, 'search_results.html', {'results': results})
+        # Call the search API and get restaurant results
+        restaurants = search_restaurants(query)
+        return render(request, 'restaurant_list.html', {'restaurants': restaurants, 'query': query})
+    return render(request, 'restaurant_search.html')
 
-def home(request):
-    restaurants = Restaurant.objects.all()
-    cuisines = Cuisine.objects.all()
-    context = {
-        'restaurants': restaurants,
-        'cuisines': cuisines,
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
-    }
-    return render(request, 'home.html', context)
+# Function-based view to display detailed information of a restaurant using place_id
+def restaurant_detail(request, place_id):
+    restaurant_details = get_restaurant_details(place_id)
+    return render(request, 'restaurant_detail.html', {'restaurant': restaurant_details})
 
-def search_results(request):
-    query = request.GET.get('q')
-    cuisine_id = request.GET.get('cuisine')
-    restaurants = Restaurant.objects.all()
-
-    if query:
-        restaurants = restaurants.filter(
-            Q(name__icontains=query) | Q(cuisine__name__icontains=query)
-        )
-    
-    if cuisine_id:
-        restaurants = restaurants.filter(cuisine_id=cuisine_id)
-
-    context = {
-        'restaurants': restaurants,
-        'query': query,
-        'selected_cuisine': cuisine_id,
-    }
-    return render(request, 'search_results.html', context)
-
-def restaurant_detail(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    reviews = restaurant.reviews.all().order_by('-created_at')
-    review_form = ReviewForm()
-
-    context = {
-        'restaurant': restaurant,
-        'reviews': reviews,
-        'review_form': review_form,
-    }
-    return render(request, 'restaurant_detail.html', context)
-
-def add_review(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.restaurant = restaurant
-            review.user = request.user
-            review.save()
-    return redirect('restaurant_detail', restaurant_id=restaurant_id)
-
-def filter_restaurants(request):
-    if request.method == 'POST':
-        cuisine = request.POST.get('cuisine')
-        rating = request.POST.get('rating')
-
-        restaurants = Restaurant.objects.all()
-
-        if cuisine:
-            restaurants = restaurants.filter(cuisine=cuisine)
-        if rating:
-            restaurants = restaurants.filter(rating__gte=float(rating))
-
-        context = {'restaurants': restaurants}
-        html = render_to_string('restaurant_list_partial.html', context)
-        return JsonResponse({'html': html})
-
+# Function-based view to list all restaurants
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
     cuisines = Cuisine.objects.all()
     
-    average_rating = restaurants.aggregate(Avg('rating'))['rating__avg']
-    most_popular_cuisine = Cuisine.objects.annotate(
-        restaurant_count=Count('restaurant')
-    ).order_by('-restaurant_count').first()
-    
-    top_rated_restaurants = Restaurant.objects.order_by('-rating')[:6]
+    # Serialize restaurant data to JSON for use in JavaScript
+    restaurant_data = serialize('json', restaurants, fields=('id', 'name', 'latitude', 'longitude'))
 
     context = {
-        'restaurants': restaurants,
+        'restaurants': restaurant_data,
         'cuisines': cuisines,
-        'average_rating': average_rating or 0,
-        'most_popular_cuisine': most_popular_cuisine.name if most_popular_cuisine else 'N/A',
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
-        'top_rated_restaurants': top_rated_restaurants,
     }
     return render(request, 'restaurant_list.html', context)
 
+# API endpoint to get all restaurant data in JSON format
 def restaurant_api(request):
     restaurants = Restaurant.objects.all()
     data = [{
@@ -174,3 +111,40 @@ def restaurant_api(request):
         'cuisine': restaurant.cuisine.name if restaurant.cuisine else ''
     } for restaurant in restaurants]
     return JsonResponse(data, safe=False)
+
+# Function to get reviews from Google
+def fetch_google_reviews(restaurant_name, restaurant_address):
+    google_places_url = 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
+    params = {
+        'input': f'{restaurant_name} {restaurant_address}',
+        'inputtype': 'textquery',
+        'fields': 'place_id',
+        'key': settings.GOOGLE_MAPS_API_KEY,
+    }
+
+    response = requests.get(google_places_url, params=params)
+    if response.status_code == 200 and response.json().get('candidates'):
+        place_id = response.json()['candidates'][0]['place_id']
+        
+        # Fetch details including reviews
+        details_url = f'https://maps.googleapis.com/maps/api/place/details/json'
+        details_params = {
+            'place_id': place_id,
+            'fields': 'reviews',
+            'key': settings.GOOGLE_MAPS_API_KEY,
+        }
+        details_response = requests.get(details_url, params=details_params)
+        if details_response.status_code == 200:
+            return details_response.json().get('result', {}).get('reviews', [])
+    return []
+
+def search_results(request):
+    query = request.GET.get('q', '')  # Get the search query from the user input
+    cuisine_id = request.GET.get('cuisine', '')
+    
+    # Use the search_restaurants function to search using the Google Places API
+    if query:
+        restaurants = search_restaurants(query)
+        return render(request, 'search_results.html', {'restaurants': restaurants, 'query': query, 'selected_cuisine': cuisine_id})
+
+    return render(request, 'search_results.html', {'restaurants': [], 'query': query, 'selected_cuisine': cuisine_id})

@@ -1,0 +1,21 @@
+<!-- restaurant_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Search Results for "{{ query }}"</h1>
+
+{% if restaurants %}
+    <ul>
+        {% for restaurant in restaurants %}
+            <li>
+                <h2>{{ restaurant.name }}</h2>
+                <p>Address: {{ restaurant.vicinity }}</p>
+                <p>Rating: {{ restaurant.rating }}</p>
+                <a href="{% url 'restaurant_detail' restaurant.place_id %}">View Details</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found for "{{ query }}".</p>
+{% endif %}
+{% endblock %}
