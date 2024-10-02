@@ -260,12 +260,15 @@
         // Initialize filters
         updateFilters();
 
-        // Add distance information to restaurant cards
+        // Add randomized distance information to restaurant cards
         restaurantCards.forEach(card => {
-            const distance = parseFloat(card.dataset.distance) || 0;
+            // Generate a random distance between 0.1 and 10.0 km
+            const randomDistance = (Math.random() * 9.9 + 0.1).toFixed(1);
+            card.dataset.distance = randomDistance;
+
             const distanceInfo = document.createElement('p');
             distanceInfo.className = 'restaurant-distance';
-            distanceInfo.innerHTML = `<i class="fas fa-road"></i> ${distance.toFixed(1)} km`;
+            distanceInfo.innerHTML = `<i class="fas fa-road"></i> ${randomDistance} km`;
             card.insertBefore(distanceInfo, card.querySelector('.view-details-btn'));
         });
     });

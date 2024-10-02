@@ -114,6 +114,9 @@
 
         infoWindow = new google.maps.InfoWindow();
 
+        // Add random markers
+        addRandomMarkers(10); // Increased from 5 to 10 markers
+
         // Load and display restaurants from API
         fetch('/api/restaurants/')
         .then(response => response.json())
@@ -139,6 +142,61 @@
 
         // Add geolocation feature
         document.getElementById("geolocate-btn").addEventListener("click", findNearbyRestaurants);
+    }
+
+    // Function to add random markers
+    function addRandomMarkers(count) {
+        const restaurantNames = [
+            "The Varsity",
+            "Mary Mac's Tea Room",
+            "Ponce City Market",
+            "Krog Street Market",
+            "Fox Bros. Bar-B-Q",
+            "Busy Bee Cafe",
+            "Gunshow",
+            "Staplehouse",
+            "Antico Pizza Napoletana",
+            "Sublime Doughnuts",
+            "Bacchanalia",
+            "JCT Kitchen & Bar",
+            "Umi Sushi",
+            "The Optimist",
+            "Bone's Restaurant",
+            "Tuk Tuk Thai Food Loft",
+            "South City Kitchen",
+            "Canoe",
+            "Two Urban Licks",
+            "Empire State South"
+        ];
+
+        for (let i = 0; i < count; i++) {
+            const randomLat = 33.7490 + (Math.random() - 0.5) * 0.15; // Slightly increased range
+            const randomLng = -84.3880 + (Math.random() - 0.5) * 0.15; // Slightly increased range
+            const position = { lat: randomLat, lng: randomLng };
+            
+            const restaurantName = restaurantNames[i % restaurantNames.length];
+            
+            const marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: restaurantName,
+            });
+
+            const infoContent = `
+                <div>
+                    <h3>${restaurantName}</h3>
+                    <p>Lat: ${randomLat.toFixed(4)}, Lng: ${randomLng.toFixed(4)}</p>
+                    <p>This is a sample location.</p>
+                </div>
+            `;
+            
+            marker.addListener('click', () => {
+                infoWindow.setContent(infoContent);
+                infoWindow.open(map, marker);
+            });
+
+            markers.push(marker);
+        }
     }
 
     // Fetch restaurant data from API
