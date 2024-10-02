@@ -1,25 +1,224 @@
 <!-- restaurant_detail.html -->
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-<h1>{{ restaurant.name }}</h1>
-<p>Address: {{ restaurant.formatted_address }}</p>
-<p>Phone: {{ restaurant.formatted_phone_number }}</p>
-<p>Website: <a href="{{ restaurant.website }}" target="_blank">{{ restaurant.website }}</a></p>
-<p>Rating: {{ restaurant.rating }}</p>
+<div class="container main-container">
+    <div class="restaurant-header">
+        <h1 class="restaurant-name">{{ restaurant.name }}</h1>
+        <div class="restaurant-rating">
+            <span class="rating-stars">
+                {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= restaurant.rating|floatformat:"0"|add:"0" %}
+                        <i class="fas fa-star"></i>
+                    {% else %}
+                        <i class="far fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </span>
+            <span class="rating-value">{{ restaurant.rating }}</span>
+        </div>
+    </div>
 
-<h3>Opening Hours</h3>
-{% if restaurant.opening_hours %}
-    <ul>
-    {% for hour in restaurant.opening_hours.weekday_text %}
-        <li>{{ hour }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No opening hours available.</p>
-{% endif %}
+    <div class="add-to-favorites-container">
+        <button class="add-to-favorites">
+            <i class="fas fa-heart mr-2"></i> Add to Favorites
+        </button>
+    </div>
 
-<!-- Back to Search button with query parameters, pointing back to `search_results` -->
-<a href="{% url 'search_results' %}?q={{ query }}&cuisine={{ selected_cuisine }}" class="btn-back">Back to Search</a>
+    <div class="restaurant-info">
+        <div class="info-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Location</h3>
+            <p>{{ restaurant.formatted_address }}</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-phone"></i>
+            <h3>Phone</h3>
+            <p>{{ restaurant.formatted_phone_number }}</p>
+        </div>
+        <div class="info-card">
+            <i class="fas fa-globe"></i>
+            <h3>Website</h3>
+            <p><a href="{{ restaurant.website }}" target="_blank" class="website-link">{{ restaurant.website }}</a></p>
+        </div>
+        <div class="info-card">
+            <i class="far fa-clock"></i>
+            <h3>Opening Hours</h3>
+            {% if restaurant.opening_hours %}
+                <ul class="opening-hours">
+                {% for hour in restaurant.opening_hours.weekday_text %}
+                    <li>{{ hour }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No opening hours available.</p>
+            {% endif %}
+        </div>
+    </div>
 
+    <div class="back-button-container">
+        <a href="{% url 'search_results' %}?q={{ query }}&cuisine={{ selected_cuisine }}" class="btn-back">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Search
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .main-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .restaurant-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .restaurant-name {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .restaurant-rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+    }
+
+    .rating-stars {
+        color: #ffc107;
+        margin-right: 0.5rem;
+    }
+
+    .rating-value {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .add-to-favorites-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .add-to-favorites {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .add-to-favorites:hover {
+        background-color: #218838;
+    }
+
+    .restaurant-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-card {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+        text-align: center;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .info-card i {
+        font-size: 2rem;
+        color: #007bff;
+        margin-bottom: 1rem;
+    }
+
+    .info-card h3 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-card p, .info-card ul {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .info-card ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .website-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .website-link:hover {
+        text-decoration: underline;
+    }
+
+    .back-button-container {
+        text-align: center;
+    }
+
+    .btn-back {
+        display: inline-block;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .btn-back:hover {
+        background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 1.5rem;
+        }
+        
+        .restaurant-name {
+            font-size: 2rem;
+        }
+        
+        .restaurant-info {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}

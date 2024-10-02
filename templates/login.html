@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-<div class="auth-wrapper login-wrapper">
-  <div class="auth-content">
+<div class="auth-container">
+  <div class="auth-card">
     <div class="auth-header">
       <h1>Taste of Atlanta</h1>
       <p>Savor the flavors, one login at a time</p>
@@ -30,15 +30,6 @@
     </form>
     <div class="auth-footer">
       <p>New to the food scene? <a href="{% url 'signup' %}">Join the feast</a></p>
-    </div>
-  </div>
-  <div class="auth-image">
-    <div class="floating-elements">
-      <span class="floating-element">🍔</span>
-      <span class="floating-element">🍕</span>
-      <span class="floating-element">🍣</span>
-      <span class="floating-element">🥗</span>
-      <span class="floating-element">🍷</span>
     </div>
   </div>
 </div>
