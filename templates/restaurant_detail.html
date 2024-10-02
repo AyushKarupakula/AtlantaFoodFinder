@@ -50,11 +50,6 @@
 
     <div class="restaurant-info">
         <div class="info-card">
-            <i class="fas fa-map-marker-alt"></i>
-            <h3>Location</h3>
-            <p>{{ restaurant.formatted_address }}</p>
-        </div>
-        <div class="info-card">
             <i class="fas fa-phone"></i>
             <h3>Phone</h3>
             <p>{{ restaurant.formatted_phone_number }}</p>
@@ -77,12 +72,6 @@
                 <p>No opening hours available.</p>
             {% endif %}
         </div>
-    </div>
-
-    <!-- Map Section to display the restaurant's location -->
-    <div class="map-container">
-        <h3>Location Map</h3>
-        <div id="map" style="height: 500px; width: 100%;"></div> <!-- Div for Google Map -->
     </div>
 
     <!-- User Reviews Section -->
@@ -291,40 +280,6 @@
         background-color: #0056b3;
     }
 
-    /* Map Section Styles */
-    .map-container {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    #map {
-        border: 2px solid #007bff;
-        border-radius: 8px;
-    }
-
-    @media (max-width: 768px) {
-        .main-container {
-            padding: 1.5rem;
-        }
-        
-        .restaurant-name {
-            font-size: 2rem;
-        }
-        
-        .restaurant-info {
-            grid-template-columns: 1fr;
-        }
-
-        .website-link {
-            white-space: normal;
-        }
-
-        .btn-back {
-            white-space: normal;
-            justify-content: center;
-        }
-    }
-
     /* New Review Form Styles */
     .add-review-form {
         background-color: #f8f9fa;
@@ -405,23 +360,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
 <script>
-    // JavaScript function to initialize Google Map
-    function initMap() {
-        const restaurantLocation = { lat: {{ restaurant.latitude }}, lng: {{ restaurant.longitude }} }; // Coordinates of the restaurant
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: restaurantLocation,
-        });
-
-        const marker = new google.maps.Marker({
-            position: restaurantLocation,
-            map: map,
-            title: "{{ restaurant.name }}",
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('reviewForm');
         form.addEventListener('submit', function(e) {
