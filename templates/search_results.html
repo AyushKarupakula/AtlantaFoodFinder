@@ -18,10 +18,23 @@
         <h1 class="search-title">Search Results for "{{ query }}"</h1>
         <p class="results-count">{{ restaurants|length }} restaurant{% if restaurants|length != 1 %}s{% endif %} found</p>
 
+        <div class="filters">
+            <div class="filter-group">
+                <label for="rating-slider">Minimum Rating:</label>
+                <input type="range" id="rating-slider" min="0" max="5" step="0.5" value="0">
+                <span id="rating-value">0</span>
+            </div>
+            <div class="filter-group">
+                <label for="distance-slider">Maximum Distance (km):</label>
+                <input type="range" id="distance-slider" min="0" max="50" step="1" value="50">
+                <span id="distance-value">50</span>
+            </div>
+        </div>
+
         {% if restaurants %}
-            <div class="restaurant-grid">
+            <div class="restaurant-grid" id="restaurant-grid">
             {% for restaurant in restaurants %}
-                <div class="restaurant-card">
+                <div class="restaurant-card" data-rating="{{ restaurant.rating }}" data-distance="{{ restaurant.distance }}">
                     <h2 class="restaurant-name">{{ restaurant.name }}</h2>
                     <p class="restaurant-address"><i class="fas fa-map-marker-alt"></i> {{ restaurant.vicinity }}</p>
                     {% if restaurant.rating %}
@@ -140,5 +153,106 @@
         color: #666;
         text-align: center;
     }
+
+    .filters {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 45%;
+    }
+
+    .filter-group label {
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #007bff;
+        cursor: pointer;
+        margin-top: -8px;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+    }
+
+    input[type="range"]:focus {
+        outline: none;
+    }
+
+    input[type="range"]:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+
+    #rating-value, #distance-value {
+        margin-top: 0.5rem;
+        font-weight: bold;
+    }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingSlider = document.getElementById('rating-slider');
+        const distanceSlider = document.getElementById('distance-slider');
+        const ratingValue = document.getElementById('rating-value');
+        const distanceValue = document.getElementById('distance-value');
+        const restaurantGrid = document.getElementById('restaurant-grid');
+        const restaurantCards = document.querySelectorAll('.restaurant-card');
+        const resultsCount = document.querySelector('.results-count');
+
+        function updateFilters() {
+            const minRating = parseFloat(ratingSlider.value);
+            const maxDistance = parseFloat(distanceSlider.value);
+            let visibleCount = 0;
+
+            restaurantCards.forEach(card => {
+                const rating = parseFloat(card.dataset.rating) || 0;
+                const distance = parseFloat(card.dataset.distance) || 0;
+
+                if (rating >= minRating && distance <= maxDistance) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            resultsCount.textContent = `${visibleCount} restaurant${visibleCount !== 1 ? 's' : ''} found`;
+        }
+
+        ratingSlider.addEventListener('input', function() {
+            ratingValue.textContent = this.value;
+            updateFilters();
+        });
+
+        distanceSlider.addEventListener('input', function() {
+            distanceValue.textContent = this.value;
+            updateFilters();
+        });
+
+        // Initialize filters
+        updateFilters();
+    });
+</script>
 {% endblock %}
