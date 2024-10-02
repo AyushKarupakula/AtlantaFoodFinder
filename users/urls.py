@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),  # Custom logout view
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),  # Dashboard view
     path('profile/', views.profile, name='profile'),  # Profile view
+
 ]
