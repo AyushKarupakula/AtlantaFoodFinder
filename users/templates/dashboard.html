@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}  <!-- This must be the very first tag -->
 {% load static %}
 
 {% block extra_head %}
@@ -17,16 +17,24 @@
         <h2 class="card-title"><i class="fas fa-heart"></i> Your Favorite Restaurants</h2>
         <ul class="dashboard-list">
           {% for favorite in favorites %}
-            <li class="dashboard-list-item">
-              <a href="{% url 'restaurant_detail' favorite.restaurant.name %}" class="restaurant-link">
-                <i class="fas fa-utensils"></i> {{ favorite.restaurant.name }}
-              </a>
-            </li>
+            {% if favorite.restaurant.place_id %}
+              <li class="dashboard-list-item">
+                <a href="{% url 'restaurant_detail' favorite.restaurant.place_id %}" class="restaurant-link">
+                  <i class="fas fa-utensils"></i> {{ favorite.restaurant.name }}
+                </a>
+              </li>
+            {% else %}
+              <li class="dashboard-list-item">
+                <span class="restaurant-link">
+                  <i class="fas fa-utensils"></i> {{ favorite.restaurant.name }} (No Details Available)
+                </span>
+              </li>
+            {% endif %}
           {% empty %}
             <li class="dashboard-list-item empty">No favorite restaurants yet.</li>
           {% endfor %}
         </ul>
-      </div>
+      </div>  
 
       </div>
     </div>
