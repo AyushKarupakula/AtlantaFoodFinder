@@ -74,13 +74,27 @@ def toggle_favorite(request, pk):
 
 
 def restaurant_search(request):
+    # Retrieve the search query and cuisine from the GET parameters
     query = request.GET.get('q', '')  # Get the search query from the user input
 
+    selected_cuisine = request.GET.get('cuisine', '')
+
+    # If a query exists, use the search function to get results
+
     if query:
-        # Call the search API and get restaurant results
         restaurants = search_restaurants(query)
-        return render(request, 'restaurant_list.html', {'restaurants': restaurants, 'query': query})
-    return render(request, 'restaurant_search.html')
+        return render(request, 'search_results.html', {
+            'restaurants': restaurants,
+            'query': query,
+            'selected_cuisine': selected_cuisine,
+        })
+    # Return an empty search results page if no query is provided
+    return render(request, 'search_results.html', {
+        'restaurants': [],
+        'query': query,
+        'selected_cuisine': selected_cuisine,
+    })
+
 
 # Function-based view to display detailed information of a restaurant using place_id
 def restaurant_detail(request, place_id):

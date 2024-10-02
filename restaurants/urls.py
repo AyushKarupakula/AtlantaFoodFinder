@@ -12,4 +12,6 @@ urlpatterns = [
     path('restaurant/<int:pk>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'),  # Toggle favorite
     path('api/restaurants/', views.restaurant_api, name='restaurant_api'),  # API endpoint for restaurants
     path('restaurants/', views.restaurant_list, name='restaurant_list'),  # List of all restaurants
-    path('search/', views.search_results, name='search_results'),  # Search page (should match this name)
+    path('search/', views.search_results, name='restaurant_search'),  # Search page (should match this name)
+]
+

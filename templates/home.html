@@ -48,7 +48,8 @@
                     <p><strong>Rating:</strong> {{ restaurant.rating }} ⭐</p>
                     <p><strong>Address:</strong> {{ restaurant.address }}</p>
                     <p><strong>Hours:</strong> {{ restaurant.opening_hours }}</p>
-                    <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn-view">View Details</a>
+                    <!-- Use `restaurant.place_id` instead of `restaurant.id` if using Google Place ID -->
+                    <a href="{% url 'restaurant_detail' restaurant.place_id %}" class="btn-view">View Details</a>
                 </div>
             </div>
             {% endfor %}
@@ -56,7 +57,6 @@
     </div>
 </section>
 
-<!-- Add a new section to display nearby restaurants -->
 <section class="nearby-restaurants">
     <div class="container">
         <h2>Nearby Restaurants</h2>
@@ -75,7 +75,8 @@
     const restaurants = [
         {% for restaurant in restaurants %}
         {
-            id: {{ restaurant.id }},
+            id: "{{ restaurant.id }}",
+            place_id: "{{ restaurant.place_id }}",  <!-- Add place_id for URL referencing -->
             name: "{{ restaurant.name }}",
             lat: {{ restaurant.latitude|default_if_none:0 }},
             lng: {{ restaurant.longitude|default_if_none:0 }},
@@ -145,12 +146,10 @@
                         return distance <= 5000; // 5km radius
                     });
 
-                    console.log("Nearby Restaurants:", nearbyRestaurants); // Debugging line
                     updateMap(nearbyRestaurants);
                     updateNearbyRestaurantList(nearbyRestaurants);
                 },
                 (error) => {
-                    console.error("Geolocation error:", error); // Debugging line
                     alert("Error: The Geolocation service failed.");
                 }
             );
@@ -164,7 +163,7 @@
         const selectedRating = parseFloat(document.getElementById("rating-filter").value);
 
         const filteredRestaurants = restaurants.filter(restaurant => {
-            const cuisineMatch = !selectedCuisine || restaurant.cuisine == selectedCuisine;
+            const cuisineMatch = !selectedCuisine || restaurant.cuisine === selectedCuisine;
             const ratingMatch = !selectedRating || restaurant.rating >= selectedRating;
             return cuisineMatch && ratingMatch;
         });
@@ -207,7 +206,7 @@
                 <h3>${restaurant.name}</h3>
                 <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
                 <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
-                <a href="/restaurant/${restaurant.id}" class="btn-view">View Details</a>
+                <a href="/restaurant/${restaurant.place_id}" class="btn-view">View Details</a> <!-- Update link to use place_id -->
             `;
             restaurantList.appendChild(restaurantCard);
         });
@@ -229,12 +228,10 @@
                 <h3>${restaurant.name}</h3>
                 <p><strong>Cuisine:</strong> ${restaurant.cuisine}</p>
                 <p><strong>Rating:</strong> ${restaurant.rating} ⭐</p>
-                <a href="/restaurant/${restaurant.id}" class="btn-view">View Details</a>
+                <a href="/restaurant/${restaurant.place_id}" class="btn-view">View Details</a> <!-- Update link to use place_id -->
             `;
             nearbyRestaurantList.appendChild(restaurantCard);
         });
-
-        console.log("Updated Nearby Restaurant List:", nearbyRestaurants); // Debugging line
     }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap&libraries=geometry" async defer></script>
