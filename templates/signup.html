@@ -1,10 +1,49 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <h1>Sign Up</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-  </form>
+<div class="auth-wrapper signup-wrapper">
+  <div class="auth-image">
+    <div class="floating-elements">
+      <span class="floating-element">🍝</span>
+      <span class="floating-element">🌮</span>
+      <span class="floating-element">🍜</span>
+      <span class="floating-element">🍰</span>
+      <span class="floating-element">🍹</span>
+    </div>
+  </div>
+  <div class="auth-content">
+    <div class="auth-header">
+      <h1>Join the Feast</h1>
+      <p>Your culinary journey begins here</p>
+    </div>
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="input-group">
+          <div class="input-icon">
+            {% if field.name == 'username' %}🍴
+            {% elif field.name == 'email' %}📧
+            {% elif field.name == 'password1' %}🔒
+            {% elif field.name == 'password2' %}🔐
+            {% else %}📝{% endif %}
+          </div>
+          {{ field }}
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <div class="input-line"></div>
+        </div>
+        {% if field.errors %}
+          <span class="error-message">{{ field.errors|striptags }}</span>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="btn-submit">
+        <span>Start Exploring</span>
+        <div class="btn-animation"></div>
+      </button>
+    </form>
+    <div class="auth-footer">
+      <p>Already a foodie? <a href="{% url 'login' %}">Log in</a></p>
+    </div>
+  </div>
+</div>
 {% endblock %}
