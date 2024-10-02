@@ -18,16 +18,15 @@ def search_restaurants(query, location='33.7756,-84.3963', radius=5000):
     return []
 
 def get_restaurant_details(place_id):
-    api_key = settings.GOOGLE_MAPS_API_KEY
-    details_url = f'https://maps.googleapis.com/maps/api/place/details/json'
+    """Fetch detailed restaurant information using Google Places API Place Details."""
+    url = 'https://maps.googleapis.com/maps/api/place/details/json'
     params = {
         'place_id': place_id,
-        'fields': 'name,rating,formatted_address,formatted_phone_number,website,opening_hours,reviews,geometry',
-        'key': api_key,
+        'fields': 'name,formatted_address,formatted_phone_number,website,rating,opening_hours,reviews',
+        'key': settings.GOOGLE_MAPS_API_KEY,
     }
 
-    response = requests.get(details_url, params=params)
+    response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json().get('result', {})
     return {}
-
