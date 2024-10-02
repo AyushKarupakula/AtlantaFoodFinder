@@ -10,6 +10,8 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.core.serializers import serialize
+from django.http import HttpResponse
+from .models import Restaurant, Favorite
 import requests
 from .api_utils import search_restaurants, get_restaurant_details
 
@@ -97,14 +99,36 @@ def restaurant_search(request):
 
 
 # Function-based view to display detailed information of a restaurant using place_id
+# views.py
+
 def restaurant_detail(request, place_id):
-    restaurant_details = get_restaurant_details(place_id)
-    reviews = restaurant_details.get('reviews', [])  # Get reviews from details
+    # Fetch restaurant details using the API
+    restaurant_details = get_restaurant_details(place_id)  # Modify this function if necessary
+
+    # Check if the details contain the latitude and longitude
+    latitude = restaurant_details.get('geometry', {}).get('location', {}).get('lat')
+    longitude = restaurant_details.get('geometry', {}).get('location', {}).get('lng')
+
     context = {
-        'restaurant': restaurant_details,
-        'reviews': reviews,
+        'restaurant': {
+            'name': restaurant_details.get('name'),
+            'formatted_address': restaurant_details.get('formatted_address'),
+            'formatted_phone_number': restaurant_details.get('formatted_phone_number'),
+            'website': restaurant_details.get('website'),
+            'rating': restaurant_details.get('rating'),
+            'opening_hours': restaurant_details.get('opening_hours'),
+            'latitude': latitude,  # Add latitude
+            'longitude': longitude,  # Add longitude
+        },
+        'reviews': restaurant_details.get('reviews', []),
+        'place_id': place_id,
+        'query': request.GET.get('q', ''),
+        'selected_cuisine': request.GET.get('cuisine', ''),
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # Ensure this is in your settings.py
     }
+
     return render(request, 'restaurant_detail.html', context)
+
 
 
 # Function-based view to list all restaurants
@@ -174,3 +198,24 @@ def search_results(request):
 
     return render(request, 'search_results.html', {'restaurants': [], 'query': query, 'selected_cuisine': cuisine_id})
 
+
+def add_to_favorites(request, place_id):
+    restaurant = get_object_or_404(Restaurant, place_id=place_id)
+    Favorite.objects.get_or_create(user=request.user, restaurant=restaurant)
+    return redirect('restaurant_detail', place_id=place_id)
+
+# Remove restaurant from favorites
+@login_required
+def remove_from_favorites(request, place_id):
+    restaurant = get_object_or_404(Restaurant, place_id=place_id)
+    favorite = Favorite.objects.filter(user=request.user, restaurant=restaurant)
+    if favorite.exists():
+        favorite.delete()
+    return redirect('restaurant_detail', place_id=place_id)
+
+# View to list all favorite restaurants
+@login_required
+def view_favorites(request):
+    favorites = Favorite.objects.filter(user=request.user).select_related('restaurant')
+    context = {'favorites': favorites}
+    return render(request, 'view_favorites.html', context)  
