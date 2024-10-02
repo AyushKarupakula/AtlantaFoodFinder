@@ -1,13 +1,13 @@
-<!-- users/templates/users/logout.html -->
-{% extends 'base_generic.html' %}
+
+{% extends 'base.html' %}
 
 {% block content %}
   <h1>Logout</h1>
   <p>Are you sure you want to log out, {{ user.username }}?</p>
 
-  <form method="POST" action="{% url 'logout' %}">
+  <form method="post" action="{% url 'logout' %}">
     {% csrf_token %}
     <button type="submit">Yes, Log Me Out</button>
     <a href="{% url 'dashboard' %}">No, Take Me Back</a>
-  </form>
+</form>
 {% endblock %}
