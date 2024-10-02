@@ -1,4 +1,3 @@
-<!-- restaurant_detail.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -80,10 +79,16 @@
         </div>
     </div>
 
+    <!-- Map Section to display the restaurant's location -->
+    <div class="map-container">
+        <h3>Location Map</h3>
+        <div id="map" style="height: 500px; width: 100%;"></div> <!-- Div for Google Map -->
+    </div>
+
     <!-- User Reviews Section -->
     <div class="reviews-section">
         <h3>User Reviews</h3>
-        
+
         <!-- Add New Review Form -->
         <div class="add-review-form">
             <h4>Write a Review</h4>
@@ -287,10 +292,9 @@
     }
 
     /* Map Section Styles */
-    .map-section h3 {
-        margin-bottom: 1rem;
-        text-align: center;
-        color: #333;
+    .map-container {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
     #map {
@@ -401,7 +405,23 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
 <script>
+    // JavaScript function to initialize Google Map
+    function initMap() {
+        const restaurantLocation = { lat: {{ restaurant.latitude }}, lng: {{ restaurant.longitude }} }; // Coordinates of the restaurant
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 15,
+            center: restaurantLocation,
+        });
+
+        const marker = new google.maps.Marker({
+            position: restaurantLocation,
+            map: map,
+            title: "{{ restaurant.name }}",
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('reviewForm');
         form.addEventListener('submit', function(e) {

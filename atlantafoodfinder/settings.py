@@ -79,3 +79,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GOOGLE_MAPS_API_KEY = 'AIzaSyBLZxDKEynXZdwnrfwiLvi6UjkOew7i8-Y'
 GOOGLE_PLACES_API_KEY = os.getenv('AIzaSyDybEBTmKfVLpRvWEjxzDp6rstLh_IQAvE')
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Change to your email provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Your email password or app-specific password
+DEFAULT_FROM_EMAIL = 'Your App Name <your-email@gmail.com>'
