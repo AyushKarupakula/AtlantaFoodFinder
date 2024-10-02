@@ -70,18 +70,6 @@
 <!-- Map Section -->
 <section class="map-section">
     <div class="container">
-        <h2>Explore Restaurants in Atlanta</h2>
-        <div class="map-controls">
-            <!-- Button to Trigger Geolocation -->
-            <button id="geolocate-btn"><i class="fas fa-map-marker-alt"></i> Find Restaurants Near Me</button>
-            <!-- Optional: Filter by Rating -->
-            <select id="rating-filter">
-                <option value="">All Ratings</option>
-                <option value="4">4+ Stars</option>
-                <option value="3">3+ Stars</option>
-                <option value="2">2+ Stars</option>
-            </select>
-        </div>
         <!-- Map Div for Google Map -->
         <div id="map" style="height: 500px; width: 100%;"></div>
     </div>
@@ -103,16 +91,6 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Section for Nearby Restaurants -->
-<section class="nearby-restaurants">
-    <div class="container">
-        <h2>Nearby Restaurants</h2>
-        <div class="restaurant-grid" id="nearby-restaurant-list">
-            <!-- Nearby restaurants will be dynamically inserted here -->
         </div>
     </div>
 </section>
