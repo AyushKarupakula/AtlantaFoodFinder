@@ -1,37 +1,59 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Dashboard</h1>
-  <p>Welcome, {{ user.username }}!</p>
-  
-  {% comment %} <div class="dashboard-links">
-      <a href="{% url 'profile' %}">View Profile</a> |
-      <a href="{% url 'logout' %}">Logout</a>
-  </div> {% endcomment %}
-  
-  <h2>Your Favorite Restaurants</h2>
-  <ul>
-    {% for favorite in user.userfavorite_set.all %}
-      <li>
-        <a href="{% url 'restaurant_detail' favorite.restaurant.pk %}">{{ favorite.restaurant.name }}</a>
-      </li>
-    {% empty %}
-      <li>No favorite restaurants yet.</li>
-    {% endfor %}
-  </ul>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <h1 class="display-4 mb-4">Welcome, {{ user.username }}!</h1>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Your Favorite Restaurants</h2>
+          <ul class="list-group list-group-flush">
+            {% for favorite in user.userfavorite_set.all %}
+              <li class="list-group-item">
+                <a href="{% url 'restaurant_detail' favorite.restaurant.pk %}" class="text-decoration-none">
+                  {{ favorite.restaurant.name }}
+                </a>
+              </li>
+            {% empty %}
+              <li class="list-group-item">No favorite restaurants yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
 
-  <h2>Your Recent Activities</h2>
-  <ul>
-    <!-- Example content. Replace or populate with real data -->
-    <li><strong>Review Posted:</strong> You reviewed "Joe's Pizza" - 5 Stars</li>
-    <li><strong>Favorite Added:</strong> "Mama's Kitchen" was added to your favorites.</li>
-    <li><strong>Review Liked:</strong> You liked a review on "Dragon Sushi".</li>
-  </ul>
-  
-  <h2>Explore More</h2>
-  <ul>
-    <li><a href="{% url 'restaurant_list' %}">Browse Restaurants</a></li>
-    <li><a href="{% url 'search_results' %}">Search for Cuisines</a></li>
-  </ul>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">Your Recent Activities</h2>
+          <ul class="list-group list-group-flush">
+            <!-- Example content. Replace or populate with real data -->
+            <li class="list-group-item">
+              <i class="fas fa-star text-warning"></i>
+              <strong>Review Posted:</strong> You reviewed "Joe's Pizza" - 5 Stars
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-heart text-danger"></i>
+              <strong>Favorite Added:</strong> "Mama's Kitchen" was added to your favorites.
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-thumbs-up text-primary"></i>
+              <strong>Review Liked:</strong> You liked a review on "Dragon Sushi".
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">Explore More</h2>
+          <div class="d-grid gap-2">
+            <a href="{% url 'restaurant_list' %}" class="btn btn-primary">Browse Restaurants</a>
+            <a href="{% url 'search_results' %}" class="btn btn-secondary">Search for Cuisines</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
