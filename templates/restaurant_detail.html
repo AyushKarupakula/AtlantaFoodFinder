@@ -19,7 +19,7 @@
     <p>No opening hours available.</p>
 {% endif %}
 
-<!-- Back to Search button with query parameters -->
-<a href="{% url 'restaurant_search' %}?q={{ query }}&cuisine={{ selected_cuisine }}" class="btn-back">Back to Search</a>
+<!-- Back to Search button with query parameters, pointing back to `search_results` -->
+<a href="{% url 'search_results' %}?q={{ query }}&cuisine={{ selected_cuisine }}" class="btn-back">Back to Search</a>
 
 {% endblock %}
