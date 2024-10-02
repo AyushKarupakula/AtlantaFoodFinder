@@ -77,3 +77,5 @@ ROOT_URLCONF = 'atlantafoodfinder.urls'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyBLZxDKEynXZdwnrfwiLvi6UjkOew7i8-Y'
+GOOGLE_PLACES_API_KEY = os.getenv('AIzaSyDybEBTmKfVLpRvWEjxzDp6rstLh_IQAvE')
+

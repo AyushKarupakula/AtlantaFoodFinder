@@ -1,3 +1,5 @@
+# views.py
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
@@ -7,6 +9,14 @@ from .forms import ReviewForm
 from django.conf import settings
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
+import json
+from django.views.decorators.http import require_GET
+import requests  # Ensure this is imported
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+
 
 class HomeView(ListView):
     model = Restaurant
@@ -15,7 +25,7 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY  # If you're using Google Maps JavaScript API in templates
         return context
 
 class RestaurantDetailView(DetailView):
@@ -25,14 +35,14 @@ class RestaurantDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['review_form'] = ReviewForm()
-        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY
+        context['google_maps_api_key'] = settings.GOOGLE_MAPS_API_KEY  # If you're using Google Maps JavaScript API in templates
         return context
 
 def cuisine_list(request):
     cuisines = Cuisine.objects.all()
     context = {
         'cuisines': cuisines,
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # If needed
     }
     return render(request, 'cuisine_list.html', context)
 
@@ -66,11 +76,9 @@ def toggle_favorite(request, pk):
 def search(request):
     query = request.GET.get('q')  
     if query:
-       
         results = Restaurant.objects.filter(name__icontains=query)
     else:
         results = Restaurant.objects.none()  
-    
     return render(request, 'search_results.html', {'results': results})
 
 def home(request):
@@ -79,7 +87,7 @@ def home(request):
     context = {
         'restaurants': restaurants,
         'cuisines': cuisines,
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # If needed
     }
     return render(request, 'home.html', context)
 
@@ -158,7 +166,7 @@ def restaurant_list(request):
         'cuisines': cuisines,
         'average_rating': average_rating or 0,
         'most_popular_cuisine': most_popular_cuisine.name if most_popular_cuisine else 'N/A',
-        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # If needed
         'top_rated_restaurants': top_rated_restaurants,
     }
     return render(request, 'restaurant_list.html', context)
@@ -174,3 +182,143 @@ def restaurant_api(request):
         'cuisine': restaurant.cuisine.name if restaurant.cuisine else ''
     } for restaurant in restaurants]
     return JsonResponse(data, safe=False)
+def search_restaurants(request):
+    results = []
+    error_message = None
+
+    if request.method == 'GET' and 'query' in request.GET:
+        # Extract query parameters from the request
+        query = request.GET.get('query')  # The search query like 'Taco Bell'
+        location = request.GET.get('location')  # Expected format: 'lat,lng'
+        radius = request.GET.get('radius', '3000')  # Default to 3000 meters
+        min_rating = float(request.GET.get('min_rating', '0'))  # Default to 0
+
+        if not query or not location:
+            error_message = 'Query and location are required.'
+        else:
+            # Use the Google Places API Key from settings
+            api_key = settings.GOOGLE_PLACES_API_KEY
+
+            # Construct the URL for Places Text Search API
+            places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+            params = {
+                'query': query,
+                'location': location,
+                'radius': radius,
+                'key': api_key,
+            }
+
+            try:
+                response = requests.get(places_url, params=params)
+                response.raise_for_status()
+                data = response.json()
+
+                # Check for API errors
+                if data.get('status') != 'OK':
+                    error_message = f"Error from Google Places API: {data.get('status')}"
+                else:
+                    # Filter results by minimum rating
+                    results = [
+                        place for place in data.get('results', [])
+                        if place.get('rating', 0) >= min_rating
+                    ]
+            except requests.exceptions.RequestException as e:
+                error_message = f"An error occurred: {str(e)}"
+
+    context = {
+        'results': results,
+        'error_message': error_message,
+    }
+    return render(request, 'search_restaurants.html', context)
+
+def get_restaurant_details(request):
+    place_id = request.GET.get('place_id')
+    error_message = None
+    details = {}
+
+    if not place_id:
+        error_message = 'Place ID is required.'
+    else:
+        api_key = settings.GOOGLE_PLACES_API_KEY
+
+        # Construct the URL for Place Details API
+        details_url = "https://maps.googleapis.com/maps/api/place/details/json"
+        params = {
+            'place_id': place_id,
+            'key': api_key,
+        }
+
+        try:
+            response = requests.get(details_url, params=params)
+            response.raise_for_status()
+            data = response.json()
+
+            # Check for API errors
+            if data.get('status') != 'OK':
+                error_message = f"Error from Google Places API: {data.get('status')}"
+            else:
+                details = data.get('result', {})
+        except requests.exceptions.RequestException as e:
+            error_message = f"An error occurred: {str(e)}"
+
+    context = {
+        'details': details,
+        'error_message': error_message,
+    }
+    return JsonResponse(context)
+
+@require_GET
+def api_search_restaurants(request):
+    results = []
+    error_message = None
+
+    # Extract query parameters from the request
+    query = request.GET.get('query')  # The search query like 'Pizza'
+    location = request.GET.get('location')  # Expected format: 'lat,lng'
+    radius = request.GET.get('radius', '3000')  # Default to 3000 meters
+    min_rating = float(request.GET.get('min_rating', '0'))  # Default to 0
+
+    if not query or not location:
+        error_message = 'Query and location are required.'
+    else:
+        api_key = settings.GOOGLE_PLACES_API_KEY
+
+        # Construct the URL for Places Text Search API
+        places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+        params = {
+            'query': query,
+            'location': location,
+            'radius': radius,
+            'key': api_key,
+        }
+
+        try:
+            response = requests.get(places_url, params=params)
+            response.raise_for_status()
+            data = response.json()
+
+            # Check for API errors
+            if data.get('status') != 'OK':
+                error_message = f"Error from Google Places API: {data.get('status')}"
+            else:
+                # Filter results by minimum rating
+                results = [
+                    {
+                        'name': place.get('name'),
+                        'rating': place.get('rating'),
+                        'address': place.get('formatted_address'),
+                        'place_id': place.get('place_id'),
+                    }
+                    for place in data.get('results', [])
+                    if place.get('rating', 0) >= min_rating
+                ]
+        except requests.exceptions.RequestException as e:
+            error_message = f"An error occurred: {str(e)}"
+
+    if error_message:
+        return JsonResponse({'error': error_message}, status=400)
+    else:
+        return JsonResponse({'results': results}, status=200)
+
+def restaurant_search_page(request):
+    return render(request, 'restaurants/restaurant_search.html')
