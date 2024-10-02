@@ -1,10 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-  <h1>Login</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<div class="login-container">
+  <div class="login-form">
+    <h1>Welcome Back</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}
+            <span class="error-message">{{ field.errors|striptags }}</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn-login">Log In</button>
+    </form>
+    <p class="signup-link">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+  </div>
+</div>
 {% endblock %}
