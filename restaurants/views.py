@@ -100,9 +100,11 @@ def restaurant_search(request):
 def restaurant_detail(request, place_id):
     restaurant_details = get_restaurant_details(place_id)
     reviews = restaurant_details.get('reviews', [])  # Get reviews from details
+    
     context = {
         'restaurant': restaurant_details,
         'reviews': reviews,
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,  # Pass the API key
     }
     return render(request, 'restaurant_detail.html', context)
 

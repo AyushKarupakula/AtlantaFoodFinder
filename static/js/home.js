@@ -1,9 +1,32 @@
 function initMap() {
     const atlanta = { lat: 33.7490, lng: -84.3880 };
-    const map = new google.maps.Map(document.getElementById("map"), {
+    const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
         center: atlanta,
     });
+    fetch('/api/restaurants/')
+    .then(response => response.json())
+    .then(data => {
+        data.forEach(restaurant => {
+            // Create a marker for each restaurant
+            const marker = new google.maps.Marker({
+                position: { lat: restaurant.latitude, lng: restaurant.longitude },
+                map: map,
+                title: restaurant.name,
+            });
+
+            // Optional: Add InfoWindow
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<h3>${restaurant.name}</h3><p>${restaurant.address}</p>`,
+            });
+
+            // Add click listener to open InfoWindow
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+        });
+    })
+    .catch(error => console.error('Error fetching restaurant data:', error));
 
     const restaurants = document.querySelectorAll('.restaurant-card');
     const bounds = new google.maps.LatLngBounds();
