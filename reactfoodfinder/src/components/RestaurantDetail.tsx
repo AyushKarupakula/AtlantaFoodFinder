@@ -18,6 +18,7 @@ interface Restaurant {
 const RestaurantDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false); // New state for favorite status
 
   useEffect(() => {
     // In a real application, you would fetch the restaurant data from an API
@@ -35,6 +36,10 @@ const RestaurantDetail: React.FC = () => {
     };
     setRestaurant(mockRestaurant);
   }, [id]);
+
+  const handleFavoriteClick = () => {
+    setIsFavorite(!isFavorite);
+  };
 
   if (!restaurant) {
     return <div>Loading...</div>;
@@ -59,6 +64,9 @@ const RestaurantDetail: React.FC = () => {
         <p><strong>Address:</strong> {restaurant.address}</p>
         <p><strong>Phone:</strong> {restaurant.phone}</p>
       </div>
+      <button className="favorite-button" onClick={handleFavoriteClick}>
+        {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+      </button>
       <div className="reviews">
         <h2>Reviews</h2>
         <ul>
